@@ -1,0 +1,317 @@
+
+******************************************************************************
+This program contains Ipopt, a library for large-scale nonlinear optimization.
+ Ipopt is released as open source code under the Eclipse Public License (EPL).
+         For more information visit http://projects.coin-or.org/Ipopt
+******************************************************************************
+
+This is Ipopt version trunk, running with linear solver mumps.
+NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
+
+Number of nonzeros in equality constraint Jacobian...:     2880
+Number of nonzeros in inequality constraint Jacobian.:        0
+Number of nonzeros in Lagrangian Hessian.............:        0
+
+Total number of variables............................:       64
+                     variables with only lower bounds:        0
+                variables with lower and upper bounds:       64
+                     variables with only upper bounds:        0
+Total number of equality constraints.................:       45
+Total number of inequality constraints...............:        0
+        inequality constraints with only lower bounds:        0
+   inequality constraints with lower and upper bounds:        0
+        inequality constraints with only upper bounds:        0
+
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+   0  1.0000000e+00 3.81e+00 1.00e+00   0.0 0.00e+00    -  0.00e+00 0.00e+00   0
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Evaluation error during soft restoration phase step.
+Warning: Evaluation error during soft restoration phase step.
+Warning: Evaluation error during soft restoration phase step.
+   1r 1.0000000e+00 3.81e+00 9.99e+02   0.4 0.00e+00    -  0.00e+00 5.96e-08R 25
+   2r 1.0204551e+00 2.64e+00 9.87e+02   2.6 1.82e+03    -  1.31e-02 1.31e-03f  1
+   3  2.1539211e+00 1.40e+00 2.86e+04  -6.1 1.39e+00    -  4.69e-01 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+   4  1.9569014e+00 6.31e-01 2.03e+04  -1.2 5.71e-01    -  1.00e+00 5.00e-01h  2
+   5  1.9566749e+00 2.40e-01 1.39e+03  -2.4 5.18e-01    -  1.00e+00 1.00e+00h  1
+   6  2.0668762e+00 2.15e-02 1.41e+02  -3.5 1.59e-01    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+   7  1.9967123e+00 2.18e-02 1.24e+02  -4.3 5.88e-01    -  1.00e+00 2.50e-01h  3
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+   8  1.9958834e+00 2.17e-02 1.24e+02  -5.1 1.09e+00    -  1.00e+00 1.95e-03h 10
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+   9  1.9958684e+00 2.17e-02 1.24e+02  -5.5 1.74e+00    -  1.00e+00 3.05e-05h 16
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  10  1.9958270e+00 2.17e-02 1.24e+02  -5.8 3.24e+00    -  1.00e+00 6.10e-05h 15
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  11  1.9957690e+00 2.17e-02 1.24e+02  -5.5 5.35e+00    -  1.00e+00 6.10e-05h 15
+Warning: Cutting back alpha due to evaluation error
+  12  1.4934029e+00 7.04e+00 8.52e+01  -5.2 9.08e+00    -  1.00e+00 3.56e-01f  2
+  13  1.4858448e+00 1.03e+00 3.31e+01  -5.6 1.63e+00    -  1.00e+00 1.00e+00h  1
+  14  1.6915606e+00 6.93e-01 8.40e+01  -5.7 1.26e+00    -  1.00e+00 1.00e+00h  1
+  15  1.7823435e+00 3.44e-01 5.67e+02  -6.6 8.37e-01    -  1.00e+00 1.00e+00h  1
+  16  1.4400165e+00 6.68e+00 3.67e+02  -6.4 3.77e+00    -  1.00e+00 1.00e+00h  1
+  17  1.8147100e+00 1.09e+00 3.71e+02  -6.5 1.45e+00    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  18  1.8055736e+00 1.08e+00 5.70e+02  -6.5 2.80e+00    -  6.72e-01 1.56e-02h  7
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  19  1.8055230e+00 1.08e+00 5.74e+02  -6.5 1.72e+01    -  2.16e-01 1.27e-05h 16
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  20  1.8053211e+00 1.08e+00 5.90e+02  -6.5 1.68e+01    -  2.04e-01 5.20e-05h 14
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  21  1.8037179e+00 1.08e+00 8.14e+02  -6.5 1.51e+01    -  7.19e-01 4.61e-04h 11
+  22  2.0767775e+00 1.59e-01 2.07e+02  -6.5 3.45e-01    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  23  2.0736976e+00 1.20e-01 1.51e+02  -6.5 2.44e-01    -  1.00e+00 2.50e-01h  3
+Warning: Cutting back alpha due to evaluation error
+  24  1.9605534e+00 1.05e-01 3.89e+02  -6.5 8.12e-01    -  1.00e+00 5.00e-01h  2
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  25  1.9605524e+00 1.05e-01 3.89e+02  -7.1 7.45e-01    -  1.00e+00 6.10e-05h 15
+  26  1.9326816e+00 2.51e-01 5.11e+01  -8.1 6.35e-01    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  27  1.9311947e+00 2.39e-01 9.05e+02  -8.2 1.71e+00    -  1.00e+00 6.25e-02h  5
+Warning: Cutting back alpha due to evaluation error
+  28  1.9487131e+00 1.47e-01 2.44e+02  -8.2 4.63e-01    -  1.00e+00 5.00e-01h  2
+  29  1.9389109e+00 2.62e-01 1.45e+02  -8.7 7.71e-01    -  1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  30  1.8228949e+00 5.25e-01 1.16e+02 -10.0 9.79e-01    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  31  1.8228706e+00 5.25e-01 1.17e+02 -10.2 3.28e+00    -  1.00e+00 6.10e-05h 15
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  32  1.8227143e+00 5.25e-01 1.17e+02 -11.0 1.81e+00    -  1.00e+00 9.77e-04h 11
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  33  1.8226931e+00 5.25e-01 1.17e+02 -11.0 1.54e+00    -  1.00e+00 1.22e-04h 14
+  34  1.5973739e+00 1.81e+00 2.47e+02 -11.0 2.16e+00    -  1.00e+00 1.00e+00h  1
+  35  1.4771549e+00 6.04e-01 9.16e+01 -11.0 1.92e+00    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+  36  1.5262612e+00 5.89e-01 1.19e+02 -11.0 1.70e+00    -  1.00e+00 5.00e-01h  2
+  37  1.7200543e+00 1.90e-01 1.35e+03 -11.0 5.21e-01    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+Warning: Cutting back alpha due to evaluation error
+  38  1.7200572e+00 1.90e-01 1.35e+03 -11.0 2.71e-01    -  1.00e+00 6.10e-05h 15
+  39  1.7346703e+00 3.20e-01 1.42e+02 -11.0 7.83e-01    -  1.00e+00 1.00e+00h  1
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  40  1.7561550e+00 1.10e-01 2.10e+01 -11.0 4.65e-01    -  1.00e+00 1.00e+00h  1
+  41  1.7677569e+00 1.17e-02 2.39e+01 -11.0 1.41e-01    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+  42  1.7698072e+00 5.97e-03 1.15e+01 -11.0 8.44e-02    -  1.00e+00 5.00e-01h  2
+  43  1.7723200e+00 7.26e-04 8.20e-01 -11.0 4.16e-02    -  1.00e+00 1.00e+00h  1
+  44  1.7724966e+00 6.18e-04 2.60e+00 -11.0 3.32e-02    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+  45  1.7724882e+00 3.10e-04 1.22e+00 -11.0 1.97e-02    -  1.00e+00 5.00e-01h  2
+Warning: Cutting back alpha due to evaluation error
+  46  1.7724875e+00 1.56e-04 5.87e-01 -11.0 2.10e-02    -  1.00e+00 5.00e-01h  2
+  47  1.7724792e+00 9.28e-04 2.46e-01 -11.0 4.06e-02    -  1.00e+00 1.00e+00h  1
+  48  1.7724306e+00 8.62e-03 7.45e-01 -11.0 1.24e-01    -  1.00e+00 1.00e+00h  1
+Warning: Cutting back alpha due to evaluation error
+  49  1.7723951e+00 4.91e-03 1.95e-01 -11.0 6.54e-02    -  1.00e+00 5.00e-01h  2
+Warning: Cutting back alpha due to evaluation error
+iter    objective    inf_pr   inf_du lg(mu)  ||d||  lg(rg) alpha_du alpha_pr  ls
+  50  1.7723939e+00 2.66e-03 2.52e-01 -11.0 3.80e-02    -  1.00e+00 5.00e-01h  2
+Warning: Cutting back alpha due to evaluation error
+  51  1.7724189e+00 1.35e-03 1.66e-01 -11.0 1.12e-02    -  1.00e+00 5.00e-01h  2
+Warning: Cutting back alpha due to evaluation error
+  52  1.7724348e+00 6.78e-04 3.47e-02 -11.0 5.43e-03    -  1.00e+00 5.00e-01h  2
+  53  1.7724512e+00 3.53e-05 2.10e-02 -11.0 7.91e-03    -  1.00e+00 1.00e+00h  1
+  54  1.7724511e+00 9.09e-06 3.80e-03 -11.0 4.01e-03    -  1.00e+00 1.00e+00h  1
+  55  1.7724510e+00 1.46e-05 1.12e-02 -11.0 5.08e-03    -  1.00e+00 1.00e+00h  1
+  56  1.7724517e+00 2.02e-07 3.80e-05 -11.0 5.98e-04    -  1.00e+00 1.00e+00h  1
+
+Number of Iterations....: 56
+
+                                   (scaled)                 (unscaled)
+Objective...............:   1.7724516564120134e+00    1.7724516564120134e+00
+Dual infeasibility......:   3.8014713868586855e-05    3.8014713868586855e-05
+Constraint violation....:   6.2237650455291226e-08    2.0220718721652983e-07
+Complementarity.........:   1.0000000000000003e-11    1.0000000000000003e-11
+Overall NLP error.......:   3.8014713868586855e-05    3.8014713868586855e-05
+
+
+Number of objective function evaluations             = 60
+Number of objective gradient evaluations             = 56
+Number of equality constraint evaluations            = 265
+Number of inequality constraint evaluations          = 0
+Number of equality constraint Jacobian evaluations   = 57
+Number of inequality constraint Jacobian evaluations = 0
+Number of Lagrangian Hessian evaluations             = 0
+Total CPU secs in IPOPT (w/o function evaluations)   =      0.069
+Total CPU secs in NLP function evaluations           =      0.100
+
+EXIT: Optimal Solution Found.

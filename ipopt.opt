@@ -1,0 +1,10 @@
+#max_iter 1
+tol 1e-3
+#acceptable_constr_viol_tol 0.001
+mu_strategy adaptive
+output_file ipopt.out
+hessian_approximation limited-memory
+jacobian_approximation finite-difference-values
+##print_info_string yes
+##print_options_documentation yes
+##derivative_test first-order

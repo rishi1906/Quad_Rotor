@@ -152,22 +152,22 @@ bool QUAD_ROTOR_NLP::get_bounds_info
   // Upper Bounds
   for (int i = 0 ; i <= N ; i++)
   {
-    x_l[_Index_["p"]      + i] = ;
-    x_l[_Index_["q"]      + i] = ;
-    x_l[_Index_["r"]      + i] = ;
-    x_l[_Index_["phi"]    + i] = ;
-    x_l[_Index_["theta"]  + i] = ;
-    x_l[_Index_["psi"]    + i] = ;
-    x_l[_Index_["z"]      + i] = ;
-    x_l[_Index_["Vz"]     + i] = ;
-    x_l[_Index_["y"]      + i] = ;
-    x_l[_Index_["Vy"]     + i] = ;
-    x_l[_Index_["x"]      + i] = ;
-    x_l[_Index_["Vx"]     + i] = ;
-    x_l[_Index_["netT"]   + i] = ;
-    x_l[_Index_["Mx"]     + i] = ;
-    x_l[_Index_["My"]     + i] = ;
-    x_l[_Index_["Mz"]     + i] = ;
+    x_u[_Index_["p"]      + i] = ;
+    x_u[_Index_["q"]      + i] = ;
+    x_u[_Index_["r"]      + i] = ;
+    x_u[_Index_["phi"]    + i] = ;
+    x_u[_Index_["theta"]  + i] = ;
+    x_u[_Index_["psi"]    + i] = ;
+    x_u[_Index_["z"]      + i] = ;
+    x_u[_Index_["Vz"]     + i] = ;
+    x_u[_Index_["y"]      + i] = ;
+    x_u[_Index_["Vy"]     + i] = ;
+    x_u[_Index_["x"]      + i] = ;
+    x_u[_Index_["Vx"]     + i] = ;
+    x_u[_Index_["netT"]   + i] = ;
+    x_u[_Index_["Mx"]     + i] = ;
+    x_u[_Index_["My"]     + i] = ;
+    x_u[_Index_["Mz"]     + i] = ;
   }
 
   // set bounds on constraints for ineuality constraints
@@ -229,7 +229,7 @@ bool QUAD_ROTOR_NLP::get_starting_point
     x[_Index_["My"]     + i] = ;
     x[_Index_["Mz"]     + i] = ;
   }
-  x[n - 1] = 12.00;
+  x[n - 1] = 12.00;  // initial guess for finial time is 12 sec (assumption)
   return true;
 }
 
@@ -242,8 +242,10 @@ bool QUAD_ROTOR_NLP::eval_f
   Number & obj_value
 )
 {
-  assert(n == (16 * (N + 1)) + 1);
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
+  
   //J = (1 / 2) * integral(t_0, t_f, (X'.Q.X+U'.R.U))
+  
   Index n_ = n - 4;
   Index sz_X = (no_of_stt_var * N_) + no_of_stt_var;
   Index sz_U = (no_of_ctrl_var * N_) + no_of_ctrl_var;

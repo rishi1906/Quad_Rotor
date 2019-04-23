@@ -247,20 +247,20 @@ bool QUAD_ROTOR_NLP::eval_f
   Index n_ = n - 4;
   Index sz_X = (no_of_stt_var * N_) + no_of_stt_var;
   Index sz_U = (no_of_ctrl_var * N_) + no_of_ctrl_var;
-  
+
   vector<Number > X(sz_X ), U(sz_U);
-  vector<vector<Number > > QX(sz_X), RU(sz_U);
+  vector<vector<Number > > Q(sz_X), R(),QX(sz_X), RU(sz_U);
 
   Number XTQX, UTRU;
   // define X
-  for (Index i = 0 ; i < n_ ; i++)
+  for (Index i = 0 ; i < sz_X ; i++)
   {
     X[i] = x[i];
   }
   //define U
-  for (Index i = n_ ; i < n ; i++)
+  for (Index i = 0 ; i < sz_U ; i++)
   {
-    U[i - n_] = x[i];
+    U[i] = x[i + sz_X];
   }
   //define Q
   for (Index i = 0 ; i < n_ ; i++)

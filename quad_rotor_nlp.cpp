@@ -6,7 +6,7 @@
 
 #include "quad_rotor_nlp.hpp"
 #include "Differentiation_Matrix.cpp"
-#include "Indices.cpp"
+#include "_Index_.cpp"
 #include "Matrix_Multiplication.cpp"
 #include <cassert>
 #include <fstream>
@@ -93,7 +93,7 @@ bool QUAD_ROTOR_NLP::get_nlp_info
 )
 {
   // size of problem
-  n = (16 * (N + 1)) + 1; // +1 for tf
+  n = ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1; // +1 for tf
 
   // size of constraints
   m = (N + 1) + 6; // +6 for boundary constraints x y z p q r
@@ -125,49 +125,49 @@ bool QUAD_ROTOR_NLP::get_bounds_info
   // If desired, we could assert to make sure they are what we think they are.
 
   //assertain the values of m and n
-  assert(n == (16 * (N + 1)) + 1);
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
   assert(m == (N + 1) + 6);
 
   // Lower bounds
   for (int i = 0 ; i <= N ; i++)
   {
-    x_l[Indices[p]      + i] = ;
-    x_l[Indices[q]      + i] = ;
-    x_l[Indices[r]      + i] = ;
-    x_l[Indices[phi]    + i] = ;
-    x_l[Indices[theta]  + i] = ;
-    x_l[Indices[psi]    + i] = ;
-    x_l[Indices[z]      + i] = ;
-    x_l[Indices[Vz]     + i] = ;
-    x_l[Indices[y]      + i] = ;
-    x_l[Indices[Vy]     + i] = ;
-    x_l[Indices[x]      + i] = ;
-    x_l[Indices[Vx]     + i] = ;
-    x_l[Indices[netT]   + i] = ;
-    x_l[Indices[Mx]     + i] = ;
-    x_l[Indices[My]     + i] = ;
-    x_l[Indices[Mz]     + i] = ;
+    x_l[_Index_["p"]      + i] = ;
+    x_l[_Index_["q"]      + i] = ;
+    x_l[_Index_["r"]      + i] = ;
+    x_l[_Index_["phi"]    + i] = ;
+    x_l[_Index_["theta"]  + i] = ;
+    x_l[_Index_["psi"]    + i] = ;
+    x_l[_Index_["z"]      + i] = ;
+    x_l[_Index_["Vz"]     + i] = ;
+    x_l[_Index_["y"]      + i] = ;
+    x_l[_Index_["Vy"]     + i] = ;
+    x_l[_Index_["x"]      + i] = ;
+    x_l[_Index_["Vx"]     + i] = ;
+    x_l[_Index_["netT"]   + i] = ;
+    x_l[_Index_["Mx"]     + i] = ;
+    x_l[_Index_["My"]     + i] = ;
+    x_l[_Index_["Mz"]     + i] = ;
   }
 
   // Upper Bounds
   for (int i = 0 ; i <= N ; i++)
   {
-    x_l[Indices[p]      + i] = ;
-    x_l[Indices[q]      + i] = ;
-    x_l[Indices[r]      + i] = ;
-    x_l[Indices[phi]    + i] = ;
-    x_l[Indices[theta]  + i] = ;
-    x_l[Indices[psi]    + i] = ;
-    x_l[Indices[z]      + i] = ;
-    x_l[Indices[Vz]     + i] = ;
-    x_l[Indices[y]      + i] = ;
-    x_l[Indices[Vy]     + i] = ;
-    x_l[Indices[x]      + i] = ;
-    x_l[Indices[Vx]     + i] = ;
-    x_l[Indices[netT]   + i] = ;
-    x_l[Indices[Mx]     + i] = ;
-    x_l[Indices[My]     + i] = ;
-    x_l[Indices[Mz]     + i] = ;
+    x_l[_Index_["p"]      + i] = ;
+    x_l[_Index_["q"]      + i] = ;
+    x_l[_Index_["r"]      + i] = ;
+    x_l[_Index_["phi"]    + i] = ;
+    x_l[_Index_["theta"]  + i] = ;
+    x_l[_Index_["psi"]    + i] = ;
+    x_l[_Index_["z"]      + i] = ;
+    x_l[_Index_["Vz"]     + i] = ;
+    x_l[_Index_["y"]      + i] = ;
+    x_l[_Index_["Vy"]     + i] = ;
+    x_l[_Index_["x"]      + i] = ;
+    x_l[_Index_["Vx"]     + i] = ;
+    x_l[_Index_["netT"]   + i] = ;
+    x_l[_Index_["Mx"]     + i] = ;
+    x_l[_Index_["My"]     + i] = ;
+    x_l[_Index_["Mz"]     + i] = ;
   }
 
   // set bounds on constraints for ineuality constraints
@@ -212,22 +212,22 @@ bool QUAD_ROTOR_NLP::get_starting_point
   //myfile << "Initialization\n";
   for (int i = 0 ; i <= N ; i++)
   {
-    x[Indices[p]      + i] = ;
-    x[Indices[q]      + i] = ;
-    x[Indices[r]      + i] = ;
-    x[Indices[phi]    + i] = ;
-    x[Indices[theta]  + i] = ;
-    x[Indices[psi]    + i] = ;
-    x[Indices[z]      + i] = ;
-    x[Indices[Vz]     + i] = ;
-    x[Indices[y]      + i] = ;
-    x[Indices[Vy]     + i] = ;
-    x[Indices[x]      + i] = ;
-    x[Indices[Vx]     + i] = ;
-    x[Indices[netT]   + i] = ;
-    x[Indices[Mx]     + i] = ;
-    x[Indices[My]     + i] = ;
-    x[Indices[Mz]     + i] = ;
+    x[_Index_["p"]      + i] = ;
+    x[_Index_["q"]      + i] = ;
+    x[_Index_["r"]      + i] = ;
+    x[_Index_["phi"]    + i] = ;
+    x[_Index_["theta"]  + i] = ;
+    x[_Index_["psi"]    + i] = ;
+    x[_Index_["z"]      + i] = ;
+    x[_Index_["Vz"]     + i] = ;
+    x[_Index_["y"]      + i] = ;
+    x[_Index_["Vy"]     + i] = ;
+    x[_Index_["x"]      + i] = ;
+    x[_Index_["Vx"]     + i] = ;
+    x[_Index_["netT"]   + i] = ;
+    x[_Index_["Mx"]     + i] = ;
+    x[_Index_["My"]     + i] = ;
+    x[_Index_["Mz"]     + i] = ;
   }
   x[n - 1] = 12.00;
   return true;
@@ -249,7 +249,7 @@ bool QUAD_ROTOR_NLP::eval_f
   Index sz_U = (no_of_ctrl_var * N_) + no_of_ctrl_var;
 
   vector<Number > X(sz_X ), U(sz_U);
-  vector<vector<Number > > Q(sz_X), R(),QX(sz_X), RU(sz_U);
+  vector<vector<Number > > Q(sz_X), R(), QX(sz_X), RU(sz_U);
 
   Number XTQX, UTRU;
   // define X

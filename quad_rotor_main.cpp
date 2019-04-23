@@ -3,7 +3,8 @@
 // This code is published under the Eclipse Public License.
 //
 // Authors:  Carl Laird, Andreas Waechter     IBM    2005-08-10
-
+// 
+// ./quad_rotor_main 50
 #include "IpIpoptApplication.hpp"
 #include "quad_rotor_nlp.hpp"
 #include "Differentiation_Matrix.hpp"

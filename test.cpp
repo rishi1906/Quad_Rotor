@@ -1,5 +1,5 @@
 #include <iostream>
-#include<fstream>
+#include <fstream>
 #include <unordered_map>
 #include <string>
 #include <utility>
@@ -34,7 +34,7 @@ void get_indices(int N)
 	INDX.insert(make_pair("Vz"   , nxt_indx));
 	INDX.insert(make_pair("y"    , nxt_indx));
 	INDX.insert(make_pair("Vy"   , nxt_indx));
-	INDX.insert(make_pair("x"   , nxt_indx));
+	INDX.insert(make_pair("x"    , nxt_indx));
 	INDX.insert(make_pair("Vx"   , nxt_indx));
 	INDX.insert(make_pair("netT" , nxt_indx));
 	INDX.insert(make_pair("Mx"   , nxt_indx));
@@ -51,10 +51,11 @@ int main() {
 	cin >> N;
 	get_indices(N);
 	// create a empty vector of pairs
-	std::set<std::pair<std::string,int>, comp> set(INDX.begin(), INDX.end());
+	std::set<std::pair<std::string, int>, comp> set;
+	set.insert(INDX.begin(), INDX.end());
 
-	for (auto const &pair: set) {
-	   std::cout << '{' << pair.first << "," << pair.second << '}' << '\n';
+	for (auto const &pair : set) {
+		std::cout << '{' << pair.first << "," << pair.second << '}' << '\n';
 	}//cout << "1";
 	//cout << INDX["_p_"];
 

@@ -642,7 +642,21 @@ void QUAD_ROTOR_NLP::finalize_solution
   //   std::cout << "t[" << i << "] = " << i << std::endl;
   // }
   // myfile << "Writing this to a file.\n";
-
+  string state_var[no_of_stt_var]
+  = {
+    "p"    ,
+    "q"    ,
+    "r"    ,
+    "phi"  ,
+    "theta",
+    "psi"  ,
+    "z"    ,
+    "Vz"   ,
+    "y"    ,
+    "Vy"   ,
+    "x"    ,
+    "Vx"
+  }
   std::vector<Number > time(N_ + 1);
   //Number tf = 1.25;
   for (Index i = 0; i <= N_; i++)
@@ -651,35 +665,19 @@ void QUAD_ROTOR_NLP::finalize_solution
     std::cout << "t[" << i << "]" << " : " << time[i] << std::endl;
   }
 
-  std::ofstream myfile;
-  myfile.open("X.txt");
-  // for X
-  std::cout << "X \n";
-  for (Index i = 0; i <= N_; i++) {
-    std::cout << x[i] << std::endl;
-    myfile << time[i] << "," << x[i] << "\n";
-  }
-  myfile.close();
-  //
+  for (Index i = 0 ; i < no_of_stt_var ; i++)
+  {
+    std::ofstream myfile;
 
-  myfile.open("Y.txt");
-  // for Y
-  std::cout << "\nY\n";
-  for (Index i = (N_ + 1); i <= ((2 * N_) + 1); i++) {
-    std::cout << x[i] << std::endl;
-    myfile << time[i - (N_ + 1)] << "," << x[i] << "\n";
+    myfile.open(state_var[i] + ".txt");
+    //std::cout << state_var[i] << "\n";
+    for (Index k = 0; k <= N_; k++) {
+      //std::cout << x[i] << std::endl;
+      myfile << time[k] << "," << x[_Index_[state_var[i]]  + k] << "\n";
+    }
+    myfile.close();
   }
-  myfile.close();
-  myfile.open("theta.txt");
-  // // for Theta
-  std::cout << "\nTheta \n";
-  for (Index i = ((2 * N_) + 2); i <= ((3 * N_) + 2); i++) {
-    std::cout << x[i] << std::endl;
-    myfile << time[i - ((2 * N_) + 2)] << "," << x[i] << "\n";
-  }
-  myfile.close();
-  //for tow
-  std::cout << "\nt_f \n";
+
   std::cout << x[n - 1] << std::endl;
 
   // std::cout << std::endl << std::endl << "Solution of the bound

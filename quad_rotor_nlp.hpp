@@ -23,7 +23,7 @@ using namespace std;
  *  Direct Trajectory Optimization by a Chebyshev
  *             Pseudospectral Method
  *            Quadrotor Modelling and Dynamics
- *            
+ *
  *  X = [p q r phi theta psi x Vz y Vy x Vx]'
  *  U = [netT Mx My Mz]'
  *  J = 1/2 integral(t_0,t_f,(X'.Q.X+U'.R.U))
@@ -177,7 +177,7 @@ private:
 
   // Private Data Members
   /** Parameter determining problem size */
-  Index N_;
+  Index N;
   std::vector<Number > T;
 
   // unordered map to save the locations of the indecies

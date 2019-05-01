@@ -21,7 +21,7 @@ const Number t0 = 0.00;
 const Number tf = 10.0;
 const no_of_stt_var = 12 ; // defines the length of X
 const no_of_ctrl_var = 4 ; // define the length of U
-// *  X = [p q r phi theta psi x Vz y Vy x Vx]'
+// *  X = [p q r phi theta psi z Vz y Vy x Vx]'
 // *  U = [netT Mx My Mz]'
 // *  J = 1/2 integral(t_0,t_f,(X'.Q.X+U'.R.U))
 
@@ -95,7 +95,7 @@ bool QUAD_ROTOR_NLP::get_nlp_info
   n = ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1; // +1 for tf
 
   // size of constraints
-  m = (N + 1) + 6; // +6 for boundary constraints x y z p q r
+  m = ((N + 1) * no_of_stt_var) + (no_of_stt_var) + 1; // +(no_of_stt_var) for boundary constraints, +1 for final time constraint
 
   // size of jacobian matrix
   nnz_jac_g = m * n;
@@ -125,7 +125,7 @@ bool QUAD_ROTOR_NLP::get_bounds_info
 
   //assertain the values of m and n
   assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
-  assert(m == (N + 1) + 6);
+  assert(m == ((N + 1) * no_of_stt_var) + (no_of_stt_var) + 1);
 
   // Lower bounds
   for (int i = 0 ; i <= N ; i++)
@@ -371,7 +371,7 @@ bool QUAD_ROTOR_NLP::eval_grad_f
   Number * grad_f
 )
 {
-  assert(n == (16 * (N + 1)) + 1);
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
 
   for (Index i = 0; i <= n - 2; i++)
   {
@@ -392,89 +392,144 @@ bool QUAD_ROTOR_NLP::eval_g
   Number * g
 )
 {
-  assert(n == (16 * (N + 1)) + 1);
-  assert(m == N + 1 + 6);
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
+  assert(m == ((N + 1) * no_of_stt_var) + (no_of_stt_var) + 1);
 
-  Index nth = 0 ;
+  Index sz_X = (no_of_stt_var * N) + no_of_stt_var;
+  Index sz_U = (no_of_ctrl_var * N) + no_of_ctrl_var;
+  Number A[no_of_stt_var][no_of_stt_var], B[no_of_stt_var][no_of_ctrl_var];
+
   //Number tf = 1.25;
-  //Number c1 = 2.0 / x[n - 1], c2 = sqrt(2 * grav);
-  Number c1 = 2.0 / (x[n - 1] - t0) , c2 = sqrt(2.0 * grav);
 
-  std::vector<Number > P1(N_ + 1), P2(N_ + 1), C(N_ + 1), X(N_ + 1), Y(N_ + 1);
-  std::vector < std::vector<Number > > D(N_ + 1 , std::vector <Number > (N_ + 1));
-  C = nxtute_c<Number, Index>(N_ + 1);
-  D = formulate_differentiation_matrix<Number, Index>(C, T, N_ + 1);
+  std::vector<Number > C(N + 1);
+
+  std::vector<std::vector<Number > > D(N + 1 , std::vector <Number > (N + 1)), DX(N + 1 , std::vector <Number > (no_of_stt_var));
+  std::vector<std::vector<Number > > X, AX, BU;
+
+  C = compute_c<Number, Index>(N + 1);
+  D = formulate_differentiation_matrix<Number, Index>(C, T, N + 1);
 
   // form X
-  for (Index i = 0; i <= N_; i++) {
-    X[i] = x[i];
-  }
-  // form Y
-  for (Index i = (N_ + 1); i <= ((2 * N_) + 1); i++) {
-    Y[i - (N_ + 1)] = x[i];
-  }
-
-  P1 = multiply_D_X<Number, Index>(D, X, N_ + 1);
-  P2 = multiply_D_X<Number, Index>(D, Y, N_ + 1);
-  //std::cout << std::endl;
-  /*for (Index i = 0; i <= N_; i++) {
-    std::cout << "P1[" << i << "] : " << P1[i] << "\n";
-  }  //std::cout << std::endl;
-  */
-  Index shift = ((2 * N_) + 2);
-  //std::cout << "\nConstraints\n";
-  for (Index i = 0; i <= N_; i++) {
-    g[nth] = (c1 * P1[i]) - (c2 * sqrt(Y[i]) * cos(x[i + shift])) ;
-    /*std::cout << "\n --\n";
-    std::cout << "|\n";
-    std::cout << "\tX[" << nth << "] = " << X[nth] << "\n";
-    std::cout << "\tY[" << nth << "] = " << Y[nth] << "\n";
-    std::cout << "\tP[" << nth << "] = " << P1[nth] << "\n";
-    std::cout << "\tC[" << nth << "] = " << cos(x[i + shift]) << "\n";
-    std::cout << "\tg[" << nth << "] = " << g[nth] << "\n";
-    std::cout << "\t\t\t  |\n";
-    std::cout << "\t\t\t--\n";*/
-    //std::cout << "g[" << nth << "] : " << g[nth] << "\n";
-    nth = nth + 1;
-
+  for (Index k = 0 ; k <= N ; k++)
+  {
+    std::vector<Number > k_X(no_of_stt_var);
+    Index i = 0;
+    k_X[  i] = x[_Index_["p"    ]  + k];
+    k_X[++i] = x[_Index_["q"    ]  + k];
+    k_X[++i] = x[_Index_["r"    ]  + k];
+    k_X[++i] = x[_Index_["phi"  ]  + k];
+    k_X[++i] = x[_Index_["theta"]  + k];
+    k_X[++i] = x[_Index_["psi"  ]  + k];
+    k_X[++i] = x[_Index_["z"    ]  + k];
+    k_X[++i] = x[_Index_["Vz"   ]  + k];
+    k_X[++i] = x[_Index_["y"    ]  + k];
+    k_X[++i] = x[_Index_["Vy"   ]  + k];
+    k_X[++i] = x[_Index_["x"    ]  + k];
+    k_X[++i] = x[_Index_["Vx"   ]  + k];
+    // push kthX to X
+    X.push_back(k_X);
+    k_X.clear();
   }
 
-  for (Index i = 0; i <= N_; i++) {
-    g[nth] = (c1 * P2[i]) - (c2 * sqrt(Y[i]) * sin(x[i + shift])) ;
-    //std::cout << "g[" << nth << "]" << g[nth] << "\n";
-    //std::cout << "g[" << nth << "] : " << g[nth] << "\n";
-    nth = nth + 1;
+  // matrix multiply D and X
+  DX = multiply_M_M(D, X, (N + 1), no_of_stt_var);
 
+  // form AX
+  // read A
+  std::ofstream myfile;
+  myfile.open("A.txt");
+  for (integer i = 0 ; i < no_of_stt_var ; i++)
+  {
+    for (integer j = 0 ; j < no_of_stt_var ; j++)
+    {
+      myfile >> A[i][j];
+    }
   }
-  g[nth] = x[N_]; // X[0] = 0
-  //std::cout << "g[" << nth << "] : " << g[nth] << "\n";
-  nth = nth + 1;
+  myfile.close();
 
-  g[nth] = x[(2 * N_) + 1]; // Y[0]=0
-  //std::cout << "g[" << nth << "] : " << g[nth] << "\n";
-  nth = nth + 1;
+  for (Index k = 0 ; k <= N ; k++)
+  {
+    std::vector<Number > k_X(no_of_stt_var);
+    Index i = 0;
+    k_X[  i] = x[_Index_["p"    ]  + k];
+    k_X[++i] = x[_Index_["q"    ]  + k];
+    k_X[++i] = x[_Index_["r"    ]  + k];
+    k_X[++i] = x[_Index_["phi"  ]  + k];
+    k_X[++i] = x[_Index_["theta"]  + k];
+    k_X[++i] = x[_Index_["psi"  ]  + k];
+    k_X[++i] = x[_Index_["z"    ]  + k];
+    k_X[++i] = x[_Index_["Vz"   ]  + k];
+    k_X[++i] = x[_Index_["y"    ]  + k];
+    k_X[++i] = x[_Index_["Vy"   ]  + k];
+    k_X[++i] = x[_Index_["x"    ]  + k];
+    k_X[++i] = x[_Index_["Vx"   ]  + k];
 
-  g[nth] = x[0] - 1.0; // X(N)-0.5 = 0
-  //nth = nth + 1;
+    AX.push_back(multiply_M_V(A, k_X, no_of_stt_var));
+    k_X.clear();
+  }
 
-  //g[nth] = x[n+1]-0.5;
-  //std::cout << "g[" << (nth) << "] : " << g[nth] << "\n";
-  //assert(nth == (2 * (N_ + 1)) + 3);std::ofstream myfile;
-  //myfile.open("output.txt");
-  //P1.clear();
-  //P2.clear();
-  //X.clear();
-  //Y.clear();
-  //C.clear();
-  //D.clear();
+  // form BX
+  // read B
+  std::ofstream myfile;
+  myfile.open("B.txt");
+  for (integer i = 0 ; i < no_of_stt_var ; i++)
+  {
+    for (integer j = 0 ; j < no_of_ctrl_var ; j++)
+    {
+      myfile >> B[i][j];
+    }
+  }
+  myfile.close();
+  for (Index k = 0 ; k <= N ; k++)
+  {
+    std::vector<Number > k_U(no_of_ctrl_var);
+    Index i = 0;
+    k_U[++i] = x[_Index_["netT" ]  + k];
+    k_U[++i] = x[_Index_["Mx"   ]  + k];
+    k_U[++i] = x[_Index_["My"   ]  + k];
+    k_U[++i] = x[_Index_["Mz"   ]  + k];
+
+    BU.push_back(multiply_M_V(B, k_U, N + 1, no_of_ctrl_var));
+    k_U.clear();
+  }
+
+  // define constraints
+  Index nth = 0 ;
+  Number c1 = 2.0 / (x[n - 1] - t_0);
+  for (Index i = 0; i <= N ; i++)
+  {
+    for (Index j = 0; j < no_of_stt_var ; j++)
+    {
+      g[nth] = (c1 * DX[i][j]) - AX[i][j] - BU[i][j];
+      nth += 1;
+    }
+  }
+  k = N;
+  g[nth++] = x[_Index_["p"    ]  + k] - /*final value of "p"    */;
+  g[nth++] = x[_Index_["q"    ]  + k] - /*final value of "q"    */;
+  g[nth++] = x[_Index_["r"    ]  + k] - /*final value of "r"    */;
+  g[nth++] = x[_Index_["phi"  ]  + k] - /*final value of "phi"  */;
+  g[nth++] = x[_Index_["theta"]  + k] - /*final value of "theta"*/;
+  g[nth++] = x[_Index_["psi"  ]  + k] - /*final value of "psi"  */;
+  g[nth++] = x[_Index_["z"    ]  + k] - /*final value of "z"    */;
+  g[nth++] = x[_Index_["Vz"   ]  + k] - /*final value of "Vz"   */;
+  g[nth++] = x[_Index_["y"    ]  + k] - /*final value of "y"    */;
+  g[nth++] = x[_Index_["Vy"   ]  + k] - /*final value of "Vy"   */;
+  g[nth++] = x[_Index_["x"    ]  + k] - /*final value of "x"    */;
+  g[nth++] = x[_Index_["Vx"   ]  + k] - /*final value of "Vx"   */;
+  // g[nth++] = x[_Index_["netT" ]  + k] - /*final value of "netT" */;
+  // g[nth++] = x[_Index_["Mx"   ]  + k] - /*final value of "Mx"   */;
+  // g[nth++] = x[_Index_["My"   ]  + k] - /*final value of "My"   */;
+  // g[nth++] = x[_Index_["Mz"   ]  + k] - /*final value of "Mz"   */;
+
   return true;
 }
+
 
 // return the structure or values of the Jacobian
 bool QUAD_ROTOR_NLP::eval_jac_g
 (
   Index n,          //
-
   const Number * x, //
   bool new_x,       //
   Index m,          //
@@ -484,6 +539,9 @@ bool QUAD_ROTOR_NLP::eval_jac_g
   Number * values   //
 )
 {
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
+  assert(m == ((N + 1) * no_of_stt_var) + (no_of_stt_var) + 1);
+
   if (values == NULL) {
     // return the structure of the Jacobian
 
@@ -583,10 +641,6 @@ void QUAD_ROTOR_NLP::finalize_solution
   // for (Index i = 0; i < n / 3; i++) {
   //   std::cout << "t[" << i << "] = " << i << std::endl;
   // }
-
-
-
-
   // myfile << "Writing this to a file.\n";
 
   std::vector<Number > time(N_ + 1);
@@ -654,6 +708,4 @@ void QUAD_ROTOR_NLP::finalize_solution
             << std::endl
             << "Numerical Solution " << std::endl;
   */
-
-
 }

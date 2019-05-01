@@ -1,7 +1,7 @@
 vector<Number> multiply_M_V
 (
-  vector<vector<Number > >Q,
-  vector<Number > X,
+  vector<vector<Number > >A,
+  vector<Number > B,
   Index sz
 )
 {
@@ -11,7 +11,7 @@ vector<Number> multiply_M_V
     Index prod = 0.0;
     for (Index j = 0 ; j < sz ; j++)
     {
-      prod += (Q[i][j] * X[j]);
+      prod += (A[i][j] * B[j]);
     }
     P[i] = prod;
   }
@@ -19,7 +19,7 @@ vector<Number> multiply_M_V
   return P;
 }
 
-Number multiply_V_M
+Number multiply_V_V
 (
   vector<Number> A,
   vector<Number> B,

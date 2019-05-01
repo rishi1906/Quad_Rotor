@@ -51,9 +51,8 @@ QUAD_ROTOR_NLP::QUAD_ROTOR_NLP
   Index N
 )
 {
-  N_ = N;
   // define time stemps
-  T = define_time_stamps<Number, Index>(N_ + 1);
+  T = define_time_stamps<Number, Index>(N + 1);
   // test if time stamps are generated correctly
   /*
    for (Index i = 0; i <= N_; i++)
@@ -131,43 +130,43 @@ bool QUAD_ROTOR_NLP::get_bounds_info
   // Lower bounds
   for (int i = 0 ; i <= N ; i++)
   {
-    x_l[_Index_["p"]      + i] = ;
-    x_l[_Index_["q"]      + i] = ;
-    x_l[_Index_["r"]      + i] = ;
-    x_l[_Index_["phi"]    + i] = ;
-    x_l[_Index_["theta"]  + i] = ;
-    x_l[_Index_["psi"]    + i] = ;
-    x_l[_Index_["z"]      + i] = ;
-    x_l[_Index_["Vz"]     + i] = ;
-    x_l[_Index_["y"]      + i] = ;
-    x_l[_Index_["Vy"]     + i] = ;
-    x_l[_Index_["x"]      + i] = ;
-    x_l[_Index_["Vx"]     + i] = ;
-    x_l[_Index_["netT"]   + i] = ;
-    x_l[_Index_["Mx"]     + i] = ;
-    x_l[_Index_["My"]     + i] = ;
-    x_l[_Index_["Mz"]     + i] = ;
+    x_l[_Index_["p"     ]  + i] = ;
+    x_l[_Index_["q"     ]  + i] = ;
+    x_l[_Index_["r"     ]  + i] = ;
+    x_l[_Index_["phi"   ]  + i] = ;
+    x_l[_Index_["theta" ]  + i] = ;
+    x_l[_Index_["psi"   ]  + i] = ;
+    x_l[_Index_["z"     ]  + i] = ;
+    x_l[_Index_["Vz"    ]  + i] = ;
+    x_l[_Index_["y"     ]  + i] = ;
+    x_l[_Index_["Vy"    ]  + i] = ;
+    x_l[_Index_["x"     ]  + i] = ;
+    x_l[_Index_["Vx"    ]  + i] = ;
+    x_l[_Index_["netT"  ]  + i] = ;
+    x_l[_Index_["Mx"    ]  + i] = ;
+    x_l[_Index_["My"    ]  + i] = ;
+    x_l[_Index_["Mz"    ]  + i] = ;
   }
 
   // Upper Bounds
   for (int i = 0 ; i <= N ; i++)
   {
-    x_u[_Index_["p"]      + i] = ;
-    x_u[_Index_["q"]      + i] = ;
-    x_u[_Index_["r"]      + i] = ;
-    x_u[_Index_["phi"]    + i] = ;
-    x_u[_Index_["theta"]  + i] = ;
-    x_u[_Index_["psi"]    + i] = ;
-    x_u[_Index_["z"]      + i] = ;
-    x_u[_Index_["Vz"]     + i] = ;
-    x_u[_Index_["y"]      + i] = ;
-    x_u[_Index_["Vy"]     + i] = ;
-    x_u[_Index_["x"]      + i] = ;
-    x_u[_Index_["Vx"]     + i] = ;
-    x_u[_Index_["netT"]   + i] = ;
-    x_u[_Index_["Mx"]     + i] = ;
-    x_u[_Index_["My"]     + i] = ;
-    x_u[_Index_["Mz"]     + i] = ;
+    x_u[_Index_["p"     ]  + i] = ;
+    x_u[_Index_["q"     ]  + i] = ;
+    x_u[_Index_["r"     ]  + i] = ;
+    x_u[_Index_["phi"   ]  + i] = ;
+    x_u[_Index_["theta" ]  + i] = ;
+    x_u[_Index_["psi"   ]  + i] = ;
+    x_u[_Index_["z"     ]  + i] = ;
+    x_u[_Index_["Vz"    ]  + i] = ;
+    x_u[_Index_["y"     ]  + i] = ;
+    x_u[_Index_["Vy"    ]  + i] = ;
+    x_u[_Index_["x"     ]  + i] = ;
+    x_u[_Index_["Vx"    ]  + i] = ;
+    x_u[_Index_["netT"  ]  + i] = ;
+    x_u[_Index_["Mx"    ]  + i] = ;
+    x_u[_Index_["My"    ]  + i] = ;
+    x_u[_Index_["Mz"    ]  + i] = ;
   }
 
   // set bounds on constraints for ineuality constraints
@@ -201,10 +200,10 @@ bool QUAD_ROTOR_NLP::get_starting_point
   std::ofstream myfile;
 
 
-  std::vector<Number > time(N_ + 1);
+  std::vector<Number > time(N + 1);
 
   // set the physical time bounds
-  for (Index i = 0; i <= N_; i++)
+  for (Index i = 0; i <= N; i++)
   {
     time[i] = ((tf - t0) * (T[i]) + (tf + t0)) / 2.0;
     //std::cout << "time[" << i << "]" << " : " << time[i] << std::endl;
@@ -212,22 +211,22 @@ bool QUAD_ROTOR_NLP::get_starting_point
   //myfile << "Initialization\n";
   for (int i = 0 ; i <= N ; i++)
   {
-    x[_Index_["p"]      + i] = ;
-    x[_Index_["q"]      + i] = ;
-    x[_Index_["r"]      + i] = ;
-    x[_Index_["phi"]    + i] = ;
-    x[_Index_["theta"]  + i] = ;
-    x[_Index_["psi"]    + i] = ;
-    x[_Index_["z"]      + i] = ;
-    x[_Index_["Vz"]     + i] = ;
-    x[_Index_["y"]      + i] = ;
-    x[_Index_["Vy"]     + i] = ;
-    x[_Index_["x"]      + i] = ;
-    x[_Index_["Vx"]     + i] = ;
-    x[_Index_["netT"]   + i] = ;
-    x[_Index_["Mx"]     + i] = ;
-    x[_Index_["My"]     + i] = ;
-    x[_Index_["Mz"]     + i] = ;
+    x[_Index_["p"     ]  + i] = ;
+    x[_Index_["q"     ]  + i] = ;
+    x[_Index_["r"     ]  + i] = ;
+    x[_Index_["phi"   ]  + i] = ;
+    x[_Index_["theta" ]  + i] = ;
+    x[_Index_["psi"   ]  + i] = ;
+    x[_Index_["z"     ]  + i] = ;
+    x[_Index_["Vz"    ]  + i] = ;
+    x[_Index_["y"     ]  + i] = ;
+    x[_Index_["Vy"    ]  + i] = ;
+    x[_Index_["x"     ]  + i] = ;
+    x[_Index_["Vx"    ]  + i] = ;
+    x[_Index_["netT"  ]  + i] = ;
+    x[_Index_["Mx"    ]  + i] = ;
+    x[_Index_["My"    ]  + i] = ;
+    x[_Index_["Mz"    ]  + i] = ;
   }
   x[n - 1] = 12.00;  // initial guess for finial time is 12 sec (assumption)
   return true;
@@ -236,68 +235,95 @@ bool QUAD_ROTOR_NLP::get_starting_point
 // returns the value of the objective function
 bool QUAD_ROTOR_NLP::eval_f
 (
-  Index n,          //
-  const Number * x, //
-  bool new_x,       //
-  Number & obj_value
+  Index n,           //
+  const Number * x,  //
+  bool new_x,        //
+  Number & obj_value //
 )
 {
   assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
-  
+
   //J = (1 / 2) * integral(t_0, t_f, (X'.Q.X+U'.R.U))
-  
-  Index n_ = n - 4;
-  Index sz_X = (no_of_stt_var * N_) + no_of_stt_var;
-  Index sz_U = (no_of_ctrl_var * N_) + no_of_ctrl_var;
 
-  vector<Number > X(sz_X ), U(sz_U);
-  vector<vector<Number > > Q(sz_X), R(), QX(sz_X), RU(sz_U);
+  //Index n_ = n - 4;
 
-  Number XTQX, UTRU;
-  // define X
-  for (Index i = 0 ; i < sz_X ; i++)
+  Index sz_X = (no_of_stt_var * N) + no_of_stt_var;
+  Index sz_U = (no_of_ctrl_var * N) + no_of_ctrl_var;
+  obj_value = 0.0;
+  for (Index k = 0 ; k <= N ; k++)
   {
-    X[i] = x[i];
-  }
-  //define U
-  for (Index i = 0 ; i < sz_U ; i++)
-  {
-    U[i] = x[i + sz_X];
-  }
-  //define Q
-  for (Index i = 0 ; i < n_ ; i++)
-  {
-    for (Index j = 0 ; j < n_ ; j++)
+    std::vector<Number > X(sz_X ), U(sz_U), QX(sz_X), RU(sz_U);
+    std::vector<std::vector<Number > > Q(sz_X, std::vector<decimal > (sz_X)), R(sz_U, std::vector<decimal > (sz_U));
+
+    Number XTQX = 0.0, UTRU = 0.0;
+
+    // define X
+    Index i = 0;
+    X[  i] = x[_Index_["p"    ]  + k];
+    X[++i] = x[_Index_["q"    ]  + k];
+    X[++i] = x[_Index_["r"    ]  + k];
+    X[++i] = x[_Index_["phi"  ]  + k];
+    X[++i] = x[_Index_["theta"]  + k];
+    X[++i] = x[_Index_["psi"  ]  + k];
+    X[++i] = x[_Index_["z"    ]  + k];
+    X[++i] = x[_Index_["Vz"   ]  + k];
+    X[++i] = x[_Index_["y"    ]  + k];
+    X[++i] = x[_Index_["Vy"   ]  + k];
+    X[++i] = x[_Index_["x"    ]  + k];
+    X[++i] = x[_Index_["Vx"   ]  + k];
+    X[++i] = x[_Index_["netT" ]  + k];
+    X[++i] = x[_Index_["Mx"   ]  + k];
+    X[++i] = x[_Index_["My"   ]  + k];
+    X[++i] = x[_Index_["Mz"   ]  + k];
+
+    //define U
+    for (Index i = 0 ; i < sz_U ; i++)
     {
-      if (i == j)
+      U[i] = x[i + sz_X];
+    }
+    //define Q
+    for (Index i = 0 ; i < sz_X ; i++)
+    {
+      for (Index j = 0 ; j < sz_X ; j++)
       {
-        Q[i][j] = 1.0 / (x[i] * x[i]);
-      } else
-      {
-        Q[i][j] = 0.0;
+        if (i == j)
+        {
+          Q[i][j] = 1.0 / (x[i] * x[i]);
+        } else
+        {
+          Q[i][j] = 0.0;
+        }
       }
     }
-  }
-  //form R
-  for (Index i = 0 ; i < 4 ; i++)
-  {
-    for (Index j = 0 ; j < 4 ; j++)
+    //define R
+    for (Index i = 0 ; i < sz_U ; i++)
     {
-      if (i == j)
+      for (Index j = 0 ; j < sz_U ; j++)
       {
-        R[i][j] = 1.0 / (u[i] * u[i]);
-      } else
-      {
-        R[i][j] = 0.0;
+        if (i == j)
+        {
+          R[i][j] = 1.0 / (u[i] * u[i]);
+        } else
+        {
+          R[i][j] = 0.0;
+        }
       }
     }
-  }
-  QX = multiply_M_V(Q, X, n_);
-  RU = multiply_M_V(R, U, n_);
-  XTQX = multiply_V_V(X, QX, 4);
-  UTRU = multiply_V_V(U, RU, 4);
+    QX = multiply_M_V(Q, X, sz_X);
+    RU = multiply_M_V(R, U, sz_U);
+    XTQX = multiply_V_V(X, QX, sz_X);
+    UTRU = multiply_V_V(U, RU, sz_U);
 
-  obj_value = (XTQX + UTRU) / 2.0;
+    obj_value += (XTQX + UTRU) / 2.0;
+    X.clear();
+    U.clear();
+
+    QX.clear();
+    RU.clear();
+
+    Q.clear();
+    R.clear();
+  }
   return true;
 }
 

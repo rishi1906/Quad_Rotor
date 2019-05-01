@@ -243,19 +243,11 @@ bool QUAD_ROTOR_NLP::eval_f
 {
   assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
 
-  std::vector<Number> w; // weights
-
   //J = (1 / 2) * integral(t_0, t_f, (X'.Q.X+U'.R.U))
 
   //Index n_ = n - 4;
 
-  Index sz_X = (no_of_stt_var * N) + no_of_stt_var;
-  Index sz_U = (no_of_ctrl_var * N) + no_of_ctrl_var;
 
-  //define weights
-  w = compute_integral_weights(N);
-  obj_value = 0.0;
-  for (Index k = 0 ; k <= N ; k++)
   {
     std::vector<Number > X(sz_X ), U(sz_U), QX(sz_X), RU(sz_U);
     std::vector<std::vector<Number > > Q(sz_X, std::vector<decimal > (sz_X)), R(sz_U, std::vector<decimal > (sz_U));
@@ -314,27 +306,9 @@ bool QUAD_ROTOR_NLP::eval_f
         }
       }
     }
-    QX = multiply_M_V(Q, X, sz_X);
-    RU = multiply_M_V(R, U, sz_U);
-    XTQX = multiply_V_V(X, QX, sz_X);
-    UTRU = multiply_V_V(U, RU, sz_U);
 
 
-    //obj_value += (XTQX + UTRU) / 2.0;
-    obj_value += ((XTQX + UTRU) * w(k));
-    X.clear();
-    U.clear();
 
-    QX.clear();
-    RU.clear();
-
-    Q.clear();
-    R.clear();
-
-  }
-  obj_value /= ((t_f - t_0) / 2.0);
-
-  w.clear();
   return true;
 }
 

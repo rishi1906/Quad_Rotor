@@ -1,15 +1,24 @@
-vector<Number> multiply_M_V
+#include <iostream>
+#include "Matrix_Multiplication.hpp"
+#include <cmath>
+#include <vector>
+
+typedef double decimal;
+typedef int integer;
+
+template<class decimal, class integer>
+vector<decimal> multiply_M_V
 (
-  vector<vector<Number > >A,
-  vector<Number > B,
-  Index sz
+  vector<vector<decimal > > A,
+  vector<decimal >          B,
+  integer sz
 )
 {
-  vector<Number> P;
-  for (Index i = 0 ; i < sz ; i++)
+  vector<decimal> P;
+  for (integer i = 0 ; i < sz ; i++)
   {
-    Index prod = 0.0;
-    for (Index j = 0 ; j < sz ; j++)
+    integer prod = 0.0;
+    for (integer j = 0 ; j < sz ; j++)
     {
       prod += (A[i][j] * B[j]);
     }
@@ -19,17 +28,68 @@ vector<Number> multiply_M_V
   return P;
 }
 
-Number multiply_V_V
+template<class decimal, class integer>
+vector<decimal> multiply_M_V
 (
-  vector<Number> A,
-  vector<Number> B,
-  Index sz
+  vector<vector<decimal > > A,
+  vector<decimal >          B,
+  integer sz1,
+  integer sz2
 )
 {
-  Number value = 0.0;
-  for (Index i = 0 ; i < sz ; i++)
+  vector<decimal> P;
+  for (integer i = 0 ; i < sz1 ; i++)
+  {
+    integer prod = 0.0;
+    for (integer j = 0 ; j < sz2 ; j++)
+    {
+      prod += (A[i][j] * B[j]);
+    }
+    P[i] = prod;
+  }
+
+  return P;
+}
+
+template<class decimal, class integer>
+decimal multiply_V_V
+(
+  vector<decimal> A,
+  vector<decimal> B,
+  integer sz
+)
+{
+  decimal value = 0.0;
+  for (integer i = 0 ; i < sz ; i++)
   {
     value += A[i] * B[i];
   }
   return value;
 }
+
+template<class decimal, class integer>
+std::vector<std::vector<decimal > > multiply_M_M
+(
+  std::vector<std::vector<decimal > >   D,  // matrix D
+  std::vector<std::vector<decimal > >   X,  // vector X
+  integer                               N,  // length of vector X
+  integer                               M
+)
+{
+  std::vector<std::vector<decimal > > prod(N, std::vector <Number > (M, 0.0));
+
+  for ( integer i = 0; i < N; i++ )
+  {
+    prod[i][j] = 0.0;                        // <===== Needs initialising
+    for ( integer j = 0; j < M; j++ )
+    {
+      for (integer k = 0 ; k < N ; k++)
+      {
+        prod[i][j] = prod[i][j] + (D[i][k] * X[j][k]);
+      }
+    }
+    //D.clear();
+    //X.clear();
+    return prod;
+  }
+

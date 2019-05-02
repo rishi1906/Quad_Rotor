@@ -16,10 +16,13 @@
 #include <string>
 #include <set>
 using namespace Ipopt;
+#define PI acos(-1)
 #define nxt_indx (((++idx) * N) + idx)
-const Number t0 = 0.00;
-const Number tf = 10.0;
-const no_of_stt_var = 12 ; // defines the length of X
+#define db_min std::numeric_limits<double>::min()
+#define db_max std::numeric_limits<double>::max()
+const Number t_0 = 0.00;
+const Number t_f = 60.0;
+const no_of_stt_var = 12 ; // define the length of X
 const no_of_ctrl_var = 4 ; // define the length of U
 // *  X = [p q r phi theta psi z Vz y Vy x Vx]'
 // *  U = [netT Mx My Mz]'
@@ -92,10 +95,10 @@ bool QUAD_ROTOR_NLP::get_nlp_info
 )
 {
   // size of problem
-  n = ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1; // +1 for tf
+  n = ((no_of_stt_var + no_of_ctrl_var) * (N + 1));
 
   // size of constraints
-  m = ((N + 1) * no_of_stt_var) + (no_of_stt_var) + 1; // +(no_of_stt_var) for boundary constraints, +1 for final time constraint
+  m = ((N + 1) * no_of_stt_var);
 
   // size of jacobian matrix
   nnz_jac_g = m * n;
@@ -124,54 +127,52 @@ bool QUAD_ROTOR_NLP::get_bounds_info
   // If desired, we could assert to make sure they are what we think they are.
 
   //assertain the values of m and n
-  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
-  assert(m == ((N + 1) * no_of_stt_var) + (no_of_stt_var) + 1);
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
+  assert(m == ((N + 1) * no_of_stt_var));
 
   // Lower bounds
   for (int i = 0 ; i <= N ; i++)
   {
-    x_l[_Index_["p"     ]  + i] = ;
-    x_l[_Index_["q"     ]  + i] = ;
-    x_l[_Index_["r"     ]  + i] = ;
-    x_l[_Index_["phi"   ]  + i] = ;
-    x_l[_Index_["theta" ]  + i] = ;
-    x_l[_Index_["psi"   ]  + i] = ;
-    x_l[_Index_["z"     ]  + i] = ;
-    x_l[_Index_["Vz"    ]  + i] = ;
-    x_l[_Index_["y"     ]  + i] = ;
-    x_l[_Index_["Vy"    ]  + i] = ;
-    x_l[_Index_["x"     ]  + i] = ;
-    x_l[_Index_["Vx"    ]  + i] = ;
-    x_l[_Index_["netT"  ]  + i] = ;
-    x_l[_Index_["Mx"    ]  + i] = ;
-    x_l[_Index_["My"    ]  + i] = ;
-    x_l[_Index_["Mz"    ]  + i] = ;
+    x_l[_Index_["p"     ]  + i] = db_min;
+    x_l[_Index_["q"     ]  + i] = db_min;
+    x_l[_Index_["r"     ]  + i] = db_min;
+    x_l[_Index_["phi"   ]  + i] = -2.0 * PI;
+    x_l[_Index_["theta" ]  + i] = -2.0 * PI;
+    x_l[_Index_["psi"   ]  + i] = -2.0 * PI;
+    x_l[_Index_["z"     ]  + i] = db_min;
+    x_l[_Index_["Vz"    ]  + i] = db_min;
+    x_l[_Index_["y"     ]  + i] = db_min;
+    x_l[_Index_["Vy"    ]  + i] = db_min;
+    x_l[_Index_["x"     ]  + i] = db_min;
+    x_l[_Index_["Vx"    ]  + i] = db_min;
+    x_l[_Index_["netT"  ]  + i] = db_min;
+    x_l[_Index_["Mx"    ]  + i] = db_min;
+    x_l[_Index_["My"    ]  + i] = db_min;
+    x_l[_Index_["Mz"    ]  + i] = db_min;
   }
 
   // Upper Bounds
   for (int i = 0 ; i <= N ; i++)
   {
-    x_u[_Index_["p"     ]  + i] = ;
-    x_u[_Index_["q"     ]  + i] = ;
-    x_u[_Index_["r"     ]  + i] = ;
-    x_u[_Index_["phi"   ]  + i] = ;
-    x_u[_Index_["theta" ]  + i] = ;
-    x_u[_Index_["psi"   ]  + i] = ;
-    x_u[_Index_["z"     ]  + i] = ;
-    x_u[_Index_["Vz"    ]  + i] = ;
-    x_u[_Index_["y"     ]  + i] = ;
-    x_u[_Index_["Vy"    ]  + i] = ;
-    x_u[_Index_["x"     ]  + i] = ;
-    x_u[_Index_["Vx"    ]  + i] = ;
-    x_u[_Index_["netT"  ]  + i] = ;
-    x_u[_Index_["Mx"    ]  + i] = ;
-    x_u[_Index_["My"    ]  + i] = ;
-    x_u[_Index_["Mz"    ]  + i] = ;
+    x_u[_Index_["p"     ]  + i] = db_max;
+    x_u[_Index_["q"     ]  + i] = db_max;
+    x_u[_Index_["r"     ]  + i] = db_max;
+    x_u[_Index_["phi"   ]  + i] = +2.0 * PI;
+    x_u[_Index_["theta" ]  + i] = +2.0 * PI;
+    x_u[_Index_["psi"   ]  + i] = +2.0 * PI;
+    x_u[_Index_["z"     ]  + i] = db_max;
+    x_u[_Index_["Vz"    ]  + i] = db_max;
+    x_u[_Index_["y"     ]  + i] = db_max;
+    x_u[_Index_["Vy"    ]  + i] = db_max;
+    x_u[_Index_["x"     ]  + i] = db_max;
+    x_u[_Index_["Vx"    ]  + i] = db_max;
+    x_u[_Index_["netT"  ]  + i] = db_max;
+    x_u[_Index_["Mx"    ]  + i] = db_max;
+    x_u[_Index_["My"    ]  + i] = db_max;
+    x_u[_Index_["Mz"    ]  + i] = db_max;
   }
 
   // set bounds on constraints for ineuality constraints
-
-
   return true;
 }
 
@@ -196,10 +197,6 @@ bool QUAD_ROTOR_NLP::get_starting_point
   assert(init_z == false);
   assert(init_lambda == false);
 
-
-  std::ofstream myfile;
-
-
   std::vector<Number > time(N + 1);
 
   // set the physical time bounds
@@ -211,28 +208,29 @@ bool QUAD_ROTOR_NLP::get_starting_point
   //myfile << "Initialization\n";
   for (int i = 0 ; i <= N ; i++)
   {
-    x[_Index_["p"     ]  + i] = ;
-    x[_Index_["q"     ]  + i] = ;
-    x[_Index_["r"     ]  + i] = ;
-    x[_Index_["phi"   ]  + i] = ;
-    x[_Index_["theta" ]  + i] = ;
-    x[_Index_["psi"   ]  + i] = ;
-    x[_Index_["z"     ]  + i] = ;
-    x[_Index_["Vz"    ]  + i] = ;
-    x[_Index_["y"     ]  + i] = ;
-    x[_Index_["Vy"    ]  + i] = ;
-    x[_Index_["x"     ]  + i] = ;
-    x[_Index_["Vx"    ]  + i] = ;
-    x[_Index_["netT"  ]  + i] = ;
-    x[_Index_["Mx"    ]  + i] = ;
-    x[_Index_["My"    ]  + i] = ;
-    x[_Index_["Mz"    ]  + i] = ;
+    x[_Index_["p"     ]  + i] = 0.0;
+    x[_Index_["q"     ]  + i] = 0.0;
+    x[_Index_["r"     ]  + i] = 0.0;
+    x[_Index_["phi"   ]  + i] = 0.0;
+    x[_Index_["theta" ]  + i] = 0.0;
+    x[_Index_["psi"   ]  + i] = 0.0;
+    x[_Index_["z"     ]  + i] = 0.0;
+    x[_Index_["Vz"    ]  + i] = 0.0;
+    x[_Index_["y"     ]  + i] = 0.0;
+    x[_Index_["Vy"    ]  + i] = 0.0;
+    x[_Index_["x"     ]  + i] = 0.0;
+    x[_Index_["Vx"    ]  + i] = 0.0;
+    x[_Index_["netT"  ]  + i] = 0.0;
+    x[_Index_["Mx"    ]  + i] = 0.0;
+    x[_Index_["My"    ]  + i] = 0.0;
+    x[_Index_["Mz"    ]  + i] = 0.0;
   }
-  x[n - 1] = 12.00;  // initial guess for finial time is 12 sec (assumption)
+  x[n - 1] = t_f;  // initial guess for finial time (take some high values)
   return true;
 }
 
 // returns the value of the objective function
+//J = (1 / 2) * integral(t_0, t_f, (X'.Q.X+U'.R.U))
 bool QUAD_ROTOR_NLP::eval_f
 (
   Index n,           //
@@ -241,19 +239,15 @@ bool QUAD_ROTOR_NLP::eval_f
   Number & obj_value //
 )
 {
-  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
-
-  std::vector<Number> w; // weights
-
-  //J = (1 / 2) * integral(t_0, t_f, (X'.Q.X+U'.R.U))
-
-  //Index n_ = n - 4;
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
 
   Index sz_X = (no_of_stt_var * N) + no_of_stt_var;
   Index sz_U = (no_of_ctrl_var * N) + no_of_ctrl_var;
 
   //define weights
+  std::vector<Number> w; // weights
   w = compute_integral_weights(N);
+
   obj_value = 0.0;
   for (Index k = 0 ; k <= N ; k++)
   {
@@ -371,7 +365,7 @@ bool QUAD_ROTOR_NLP::eval_grad_f
   Number * grad_f
 )
 {
-  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
 
   for (Index i = 0; i <= n - 2; i++)
   {
@@ -392,8 +386,8 @@ bool QUAD_ROTOR_NLP::eval_g
   Number * g
 )
 {
-  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
-  assert(m == ((N + 1) * no_of_stt_var) + (no_of_stt_var) + 1);
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
+  assert(m == ((N + 1) * no_of_stt_var));
 
   Index sz_X = (no_of_stt_var * N) + no_of_stt_var;
   Index sz_U = (no_of_ctrl_var * N) + no_of_ctrl_var;
@@ -437,7 +431,7 @@ bool QUAD_ROTOR_NLP::eval_g
   // form AX
   // read A
   std::ofstream myfile;
-  myfile.open("A.txt");
+  myfile.open("./Inputs/A.txt");
   for (integer i = 0 ; i < no_of_stt_var ; i++)
   {
     for (integer j = 0 ; j < no_of_stt_var ; j++)
@@ -471,7 +465,7 @@ bool QUAD_ROTOR_NLP::eval_g
   // form BX
   // read B
   std::ofstream myfile;
-  myfile.open("B.txt");
+  myfile.open("./Inputs/B.txt");
   for (integer i = 0 ; i < no_of_stt_var ; i++)
   {
     for (integer j = 0 ; j < no_of_ctrl_var ; j++)
@@ -504,19 +498,20 @@ bool QUAD_ROTOR_NLP::eval_g
       nth += 1;
     }
   }
-  k = N;
-  g[nth++] = x[_Index_["p"    ]  + k] - /*final value of "p"    */;
-  g[nth++] = x[_Index_["q"    ]  + k] - /*final value of "q"    */;
-  g[nth++] = x[_Index_["r"    ]  + k] - /*final value of "r"    */;
-  g[nth++] = x[_Index_["phi"  ]  + k] - /*final value of "phi"  */;
-  g[nth++] = x[_Index_["theta"]  + k] - /*final value of "theta"*/;
-  g[nth++] = x[_Index_["psi"  ]  + k] - /*final value of "psi"  */;
-  g[nth++] = x[_Index_["z"    ]  + k] - /*final value of "z"    */;
-  g[nth++] = x[_Index_["Vz"   ]  + k] - /*final value of "Vz"   */;
-  g[nth++] = x[_Index_["y"    ]  + k] - /*final value of "y"    */;
-  g[nth++] = x[_Index_["Vy"   ]  + k] - /*final value of "Vy"   */;
-  g[nth++] = x[_Index_["x"    ]  + k] - /*final value of "x"    */;
-  g[nth++] = x[_Index_["Vx"   ]  + k] - /*final value of "Vx"   */;
+  //additional constraints
+  //k = N;
+  // g[nth++] = x[_Index_["p"    ]  + k] - /*final value of "p"    */;
+  // g[nth++] = x[_Index_["q"    ]  + k] - /*final value of "q"    */;
+  // g[nth++] = x[_Index_["r"    ]  + k] - /*final value of "r"    */;
+  // g[nth++] = x[_Index_["phi"  ]  + k] - /*final value of "phi"  */;
+  // g[nth++] = x[_Index_["theta"]  + k] - /*final value of "theta"*/;
+  // g[nth++] = x[_Index_["psi"  ]  + k] - /*final value of "psi"  */;
+  // g[nth++] = x[_Index_["z"    ]  + k] - /*final value of "z"    */;
+  // g[nth++] = x[_Index_["Vz"   ]  + k] - /*final value of "Vz"   */;
+  // g[nth++] = x[_Index_["y"    ]  + k] - /*final value of "y"    */;
+  // g[nth++] = x[_Index_["Vy"   ]  + k] - /*final value of "Vy"   */;
+  // g[nth++] = x[_Index_["x"    ]  + k] - /*final value of "x"    */;
+  // g[nth++] = x[_Index_["Vx"   ]  + k] - /*final value of "Vx"   */;
   // g[nth++] = x[_Index_["netT" ]  + k] - /*final value of "netT" */;
   // g[nth++] = x[_Index_["Mx"   ]  + k] - /*final value of "Mx"   */;
   // g[nth++] = x[_Index_["My"   ]  + k] - /*final value of "My"   */;
@@ -539,8 +534,8 @@ bool QUAD_ROTOR_NLP::eval_jac_g
   Number * values   //
 )
 {
-  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)) + 1);
-  assert(m == ((N + 1) * no_of_stt_var) + (no_of_stt_var) + 1);
+  assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
+  assert(m == ((N + 1) * no_of_stt_var));
 
   if (values == NULL) {
     // return the structure of the Jacobian
@@ -614,7 +609,6 @@ bool QUAD_ROTOR_NLP::eval_h(
 void QUAD_ROTOR_NLP::finalize_solution
 (
   SolverReturn status,       //
-
   Index n,                   //
   const Number * x,          //
   const Number * z_L,        //
@@ -642,24 +636,10 @@ void QUAD_ROTOR_NLP::finalize_solution
   //   std::cout << "t[" << i << "] = " << i << std::endl;
   // }
   // myfile << "Writing this to a file.\n";
-  string state_var[no_of_stt_var]
-  = {
-    "p"    ,
-    "q"    ,
-    "r"    ,
-    "phi"  ,
-    "theta",
-    "psi"  ,
-    "z"    ,
-    "Vz"   ,
-    "y"    ,
-    "Vy"   ,
-    "x"    ,
-    "Vx"
-  }
-  std::vector<Number > time(N_ + 1);
+  string state_var[no_of_stt_var + no_of_ctrl_var] = {"p", "q" , "r", "phi", "theta", "psi", "z", "Vz", "y", "Vy", "x", "Vx", "netT", "Mx", "My", "Mz"};
+  std::vector<Number > time(N + 1);
   //Number tf = 1.25;
-  for (Index i = 0; i <= N_; i++)
+  for (Index i = 0; i <= N; i++)
   {
     time[i] = (x[n - 1] / 2.0) * (T[i] + 1.0);
     std::cout << "t[" << i << "]" << " : " << time[i] << std::endl;

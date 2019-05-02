@@ -4,15 +4,13 @@
 #include "Integral_Weights.hpp"
 #define PI acos(-1)
 using namespace std;
+// uncomment the typdefs when testing the integral weights separately
 typedef double decimal;
 typedef int integer;
-
-
+//typedef Number decimal;
+//typedef Index integer;
 template<class decimal, class integer>
-std::vector<decimal > compute_integral_weights
-(
-    integer N_
-)
+std::vector<decimal > compute_integral_weights(integer N_)
 {
 	//cout << "Entered\n";
 	integer N = N_ - 1;

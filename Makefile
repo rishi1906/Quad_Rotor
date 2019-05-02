@@ -17,6 +17,8 @@ EXE = quad_rotor_cpp
 OBJS = quad_rotor_main.o \
 	quad_rotor_nlp.o \
 	Differentiation_Matrix.o \
+	Matrix_Multiplication.o \
+	Integral_Weights.o \
 	
 	
 
@@ -24,7 +26,7 @@ OBJS = quad_rotor_main.o \
 ADDLIBS = 
 
 # CHANGEME: Additional flags for compilation (e.g., include flags)
-ADDINCFLAGS = -I/home/dell/sliding_stone
+ADDINCFLAGS = -I/home/dell/Quad_Rotor
 
 ##########################################################################
 #  Usually, you don't have to change anything below.  Note that if you   #

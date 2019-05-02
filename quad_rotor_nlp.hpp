@@ -10,7 +10,7 @@
 #include "IpTNLP.hpp"
 #include <vector>
 #include <iostream>
-#include <unordered_map>
+#include <map>
 #include <string>
 #include <set>
 #include <utility>
@@ -29,6 +29,17 @@ using namespace std;
  *  J = 1/2 integral(t_0,t_f,(X'.Q.X+U'.R.U))
  *
  */
+struct comp
+{
+  template<typename T>
+  bool operator()(const T& l, const T& r) const
+  {
+    if (l.second != r.second)
+      return l.second < r.second;
+
+    return l.first < r.first;
+  }
+};
 class QUAD_ROTOR_NLP: public TNLP
 {
 public:
@@ -181,8 +192,20 @@ private:
   std::vector<Number > T;
 
   // unordered map to save the locations of the indecies
-  std::unordered_map <string, int> INDX;
-  std::set<std::pair<std::string, int>, comp> _Index_;
+  std::map <string, int> INDX;
+  //std::set<std::pair<std::string, int>, comp> _Index_;
+  Number Obj_func
+  (
+    Number* x,
+    Index N
+  );
+  Number grad_at_x
+  (
+    Number * x, //
+    Index pos,//
+    Index n, //
+    Number h
+  );
 };
 
 #endif

@@ -17,7 +17,7 @@ vector<decimal> multiply_M_V
   vector<decimal> P;
   for (integer i = 0 ; i < sz ; i++)
   {
-    integer prod = 0.0;
+    decimal prod = 0.0;
     for (integer j = 0 ; j < sz ; j++)
     {
       prod += (A[i][j] * B[j]);
@@ -76,13 +76,13 @@ std::vector<std::vector<decimal > > multiply_M_M
   integer                               M
 )
 {
-  std::vector<std::vector<decimal > > prod(N, std::vector <Number > (M, 0.0));
+  std::vector<std::vector<decimal > > prod(N, std::vector <decimal > (M));
 
   for ( integer i = 0; i < N; i++ )
   {
-    prod[i][j] = 0.0;                        // <===== Needs initialising
     for ( integer j = 0; j < M; j++ )
     {
+      prod[i][j] = 0.0;
       for (integer k = 0 ; k < N ; k++)
       {
         prod[i][j] = prod[i][j] + (D[i][k] * X[j][k]);
@@ -92,4 +92,5 @@ std::vector<std::vector<decimal > > multiply_M_M
     //X.clear();
     return prod;
   }
+}
 

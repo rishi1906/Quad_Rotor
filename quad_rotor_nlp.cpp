@@ -120,7 +120,7 @@ bool QUAD_ROTOR_NLP::get_nlp_info
   n = ((no_of_stt_var + no_of_ctrl_var) * (N + 1));
 
   // size of constraints
-  m = ((N + 1) * no_of_stt_var);
+  m = (((N + 1) * no_of_stt_var) + (no_of_stt_var + no_of_ctrl_var));
 
   // size of jacobian matrix
   nnz_jac_g = m * n;
@@ -150,7 +150,7 @@ bool QUAD_ROTOR_NLP::get_bounds_info
 
   //assertain the values of m and n
   assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
-  assert(m == ((N + 1) * no_of_stt_var));
+  assert(m == (((N + 1) * no_of_stt_var) + (no_of_stt_var + no_of_ctrl_var)));
 
   // Lower Bounds
   for (int i = 0 ; i <= N ; i++)
@@ -271,7 +271,7 @@ Number QUAD_ROTOR_NLP::Obj_func
   for (Index k = 0 ; k <= N ; k++)
   {
     std::vector<Number > X(no_of_stt_var ), U(no_of_ctrl_var), QX(no_of_stt_var), RU(no_of_ctrl_var);
-    std::vector<std::vector<Number > > Q(no_of_stt_var, std::vector<decimal > (no_of_stt_var)), R(no_of_ctrl_var, std::vector<decimal > (no_of_ctrl_var));
+    std::vector<std::vector<Number > > Q(no_of_stt_var, std::vector<Number > (no_of_stt_var)), R(no_of_ctrl_var, std::vector<Number > (no_of_ctrl_var));
 
     Number XTQX = 0.0, UTRU = 0.0;
 
@@ -454,7 +454,7 @@ bool QUAD_ROTOR_NLP::eval_g
 )
 {
   assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
-  assert(m == ((N + 1) * no_of_stt_var));
+  assert(m == (((N + 1) * no_of_stt_var) + (no_of_stt_var + no_of_ctrl_var)));
 
   //Index sz_X = (no_of_stt_var * N) + no_of_stt_var;
   //Index sz_U = (no_of_ctrl_var * N) + no_of_ctrl_var;
@@ -565,24 +565,24 @@ bool QUAD_ROTOR_NLP::eval_g
       nth += 1;
     }
   }
-  //additional constraints
-  //k = N;
-  // g[nth++] = x[INDX["p"    ]  + k] - /*final value of "p"    */;
-  // g[nth++] = x[INDX["q"    ]  + k] - /*final value of "q"    */;
-  // g[nth++] = x[INDX["r"    ]  + k] - /*final value of "r"    */;
-  // g[nth++] = x[INDX["phi"  ]  + k] - /*final value of "phi"  */;
-  // g[nth++] = x[INDX["theta"]  + k] - /*final value of "theta"*/;
-  // g[nth++] = x[INDX["psi"  ]  + k] - /*final value of "psi"  */;
-  // g[nth++] = x[INDX["z"    ]  + k] - /*final value of "z"    */;
-  // g[nth++] = x[INDX["Vz"   ]  + k] - /*final value of "Vz"   */;
-  // g[nth++] = x[INDX["y"    ]  + k] - /*final value of "y"    */;
-  // g[nth++] = x[INDX["Vy"   ]  + k] - /*final value of "Vy"   */;
-  // g[nth++] = x[INDX["x"    ]  + k] - /*final value of "x"    */;
-  // g[nth++] = x[INDX["Vx"   ]  + k] - /*final value of "Vx"   */;
-  // g[nth++] = x[INDX["netT" ]  + k] - /*final value of "netT" */;
-  // g[nth++] = x[INDX["Mx"   ]  + k] - /*final value of "Mx"   */;
-  // g[nth++] = x[INDX["My"   ]  + k] - /*final value of "My"   */;
-  // g[nth++] = x[INDX["Mz"   ]  + k] - /*final value of "Mz"   */;
+  //additional constraints initial values
+  k = 0;
+  g[nth++] = x[INDX["p"    ]  + k] - 1.0 /*intial value of "p"    */;
+  g[nth++] = x[INDX["q"    ]  + k] - 1.0 /*intial value of "q"    */;
+  g[nth++] = x[INDX["r"    ]  + k] - 1.0 /*intial value of "r"    */;
+  g[nth++] = x[INDX["phi"  ]  + k] - 1.0 /*intial value of "phi"  */;
+  g[nth++] = x[INDX["theta"]  + k] - 1.0 /*intial value of "theta"*/;
+  g[nth++] = x[INDX["psi"  ]  + k] - 1.0 /*intial value of "psi"  */;
+  g[nth++] = x[INDX["z"    ]  + k] - 1.0 /*intial value of "z"    */;
+  g[nth++] = x[INDX["Vz"   ]  + k] - 1.0 /*intial value of "Vz"   */;
+  g[nth++] = x[INDX["y"    ]  + k] - 1.0 /*intial value of "y"    */;
+  g[nth++] = x[INDX["Vy"   ]  + k] - 1.0 /*intial value of "Vy"   */;
+  g[nth++] = x[INDX["x"    ]  + k] - 1.0 /*intial value of "x"    */;
+  g[nth++] = x[INDX["Vx"   ]  + k] - 1.0 /*intial value of "Vx"   */;
+  g[nth++] = x[INDX["netT" ]  + k] - 1.0 /*intial value of "netT" */;
+  g[nth++] = x[INDX["Mx"   ]  + k] - 1.0 /*intial value of "Mx"   */;
+  g[nth++] = x[INDX["My"   ]  + k] - 1.0 /*intial value of "My"   */;
+  g[nth++] = x[INDX["Mz"   ]  + k] - 1.0 /*intial value of "Mz"   */;
   assert(nth == m);
   return true;
 }
@@ -602,7 +602,7 @@ bool QUAD_ROTOR_NLP::eval_jac_g
 )
 {
   assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
-  assert(m == ((N + 1) * no_of_stt_var));
+  assert(m == (((N + 1) * no_of_stt_var) + (no_of_stt_var + no_of_ctrl_var)));
 
   if (values == NULL) {
     // return the structure of the Jacobian

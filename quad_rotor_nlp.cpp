@@ -561,7 +561,7 @@ bool QUAD_ROTOR_NLP::eval_g
 
   // define constraints
   Index nth = 0 ;
-  Number c1 = 2.0 / (x[n - 1] - t_0);
+  Number c1 = 2.0 / (t_f - t_0);
   for (Index i = 0; i <= N ; i++)
   {
     for (Index j = 0; j < no_of_stt_var ; j++)

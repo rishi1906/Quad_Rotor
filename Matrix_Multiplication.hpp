@@ -11,33 +11,33 @@ typedef int integer;
 template<class decimal, class integer>
 std::vector<decimal> multiply_M_V
 (
-    std::vector<std::vector<decimal > >A,
-    std::vector<decimal > B,
+    const std::vector<std::vector<decimal > >& A,
+    const std::vector<decimal >& B,
     integer sz
 );
 template<class decimal, class integer>
 std::vector<decimal> multiply_M_V
 (
-    std::vector<std::vector<decimal > > A,
-    std::vector<decimal >          B,
+    const std::vector<std::vector<decimal > >& A,
+    const std::vector<decimal >& B,
     integer sz1,
     integer sz2
 );
 template<class decimal, class integer>
 decimal multiply_V_V
 (
-    std::vector<decimal> A,
-    std::vector<decimal> B,
+    const std::vector<decimal>& A,
+    const std::vector<decimal>& B,
     integer sz
 );
 
 template<class decimal, class integer>
 std::vector<std::vector<decimal > > multiply_D_X
 (
-    std::vector<std::vector<decimal > > 	D,	// matrix D
-    std::vector<decimal > 					X,	// vector X
-    integer 								N, 	// length of vector X
-    integer 								M
+    const std::vector<std::vector<decimal > >& D,  // matrix D
+    const std::vector<decimal >& X,  // vector X
+    integer                                 N,  // length of vector X
+    integer                                 M
 );
 
 

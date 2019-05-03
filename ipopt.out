@@ -8,5 +8,3 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 This is Ipopt version trunk, running with linear solver mumps.
 NOTE: Other linear solvers might be more efficient (see Ipopt documentation).
 
-
-EXIT: Problem has inconsistent variable bounds or constraint sides.

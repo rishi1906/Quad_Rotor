@@ -22,16 +22,16 @@ std::vector<decimal > define_time_stamps
 template<class decimal, class integer>
 std::vector<decimal > multiply_D_X
 (
-    std::vector<std::vector<decimal > > 	D,	// matrix D
-    std::vector<decimal > 					X,	// vector X
+    const std::vector<std::vector<decimal > >& D,	// matrix D
+    const std::vector<decimal >& X,	// vector X
     integer 								N 	// length of vector X
 );
 
 template<class decimal, class integer>
 std::vector<std::vector<decimal > > formulate_differentiation_matrix
 (
-    std::vector<decimal >	c, //
-    std::vector<decimal >	t, //
+    const std::vector<decimal >& c, //
+    const std::vector<decimal >& t, //
     integer 				N  //
 );
 

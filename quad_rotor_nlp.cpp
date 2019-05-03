@@ -3,14 +3,16 @@
 // This code is published under the Eclipse Public License.
 //
 // Authors:  Carl Laird, Andreas Waechter     IBM    2005-08-16
-
+// Authors: Rishabh Vashistha rishabhsharma1906@gmail.com
 #include "quad_rotor_nlp.hpp"
 #include <cassert>
 #include <fstream>
 #include <iostream>
 #include <limits>
 #include <cmath>
+#include <cstdlib>
 #include <map>
+#include <utility>
 #include <string>
 #include <set>
 #include "Differentiation_Matrix.cpp"
@@ -19,41 +21,23 @@
 using namespace Ipopt;
 #define PI acos(-1)
 #define nxt_indx (((idx+1) * N) + (idx+1))
-
+#define rndm ((mx - mn) * ( (double)rand() / (double)RAND_MAX ) + mn)
 // define size of stepsize for finite difference scheme to find gradient
 const Number step_size = 1e-8;
 const Number t_0 = 0.00;
 const Number t_f = 60.0;
+const Number mx = 999.999;
+const Number mn = -999.999;
 const Index no_of_stt_var = 12 ; // define the length of X
 const Index no_of_ctrl_var = 4 ; // define the length of U
 const Number db_min = std::numeric_limits<double>::min();
 const Number db_max = std::numeric_limits<double>::max();
-// const Number db_min = -999999.999999;
-// const Number db_max = +999999.999999;
+// const Number db_min = -100.00;
+// const Number db_max = 100.00;
 // *  X = [p q r phi theta psi z Vz y Vy x Vx]'
 // *  U = [netT Mx My Mz]'
 // *  J = 1/2 integral(t_0,t_f,(X'.Q.X+U'.R.U))
 
-// define no of constraints and size of decision vector
-
-//#define N_ 10 // no of grid points
-
-// define size of stepsize for finite difference scheme to find gradient
-//const Number step_size = 1e-8;
-
-//Number RAD_to_DEG(Number r) { return r * 180.0 / PI; }
-/*
-struct comp
-{
-  template<typename T>
-  bool operator()(const T& l, const T& r) const
-  {
-    if (l.second != r.second)
-      return l.second < r.second;
-
-    return l.first < r.first;
-  }
-};*/
 std::map <string, int> get_indices(int N)
 {
   int idx = 0;
@@ -98,26 +82,21 @@ QUAD_ROTOR_NLP::QUAD_ROTOR_NLP
 )
 {
   // define time stemps
+  std::ofstream file;
+  file.open("output.txt");
+
   T = define_time_stamps<Number, Index>(N + 1);
   // test if time stamps are generated correctly
-  /*
-   for (Index i = 0; i <= N_; i++)
-   {
-     std::cout << "T[" << i << "]" << " : " << T[i] << "\n";
-   }
-  */
+
+  for (Index i = 0; i <= N; i++)
+  {
+    std::cout << "T[" << i << "]" << " : " << T[i] << "\n";
+    file << T[i] << "\n";
+  }
+  file.close();
 
   // get initial indices of state variables
   INDX = get_indices(N);
-  //_Index_.insert(INDX.begin(), INDX.end());
-
-  // test if INDX has the right vlaues
-  /*
-  for (auto const &pair : set)
-  {
-    std::cout << '{' << pair.first << "->" << pair.second << '}' << '\n';
-  }
-  */
 }
 
 // constructor
@@ -179,9 +158,9 @@ bool QUAD_ROTOR_NLP::get_bounds_info
     x_l[INDX["p"     ]  + i] = db_min;
     x_l[INDX["q"     ]  + i] = db_min;
     x_l[INDX["r"     ]  + i] = db_min;
-    x_l[INDX["phi"   ]  + i] = -2.0 * PI;
-    x_l[INDX["theta" ]  + i] = -2.0 * PI;
-    x_l[INDX["psi"   ]  + i] = -2.0 * PI;
+    x_l[INDX["phi"   ]  + i] = db_min;
+    x_l[INDX["theta" ]  + i] = db_min;
+    x_l[INDX["psi"   ]  + i] = db_min;
     x_l[INDX["z"     ]  + i] = db_min;
     x_l[INDX["Vz"    ]  + i] = db_min;
     x_l[INDX["y"     ]  + i] = db_min;
@@ -200,9 +179,9 @@ bool QUAD_ROTOR_NLP::get_bounds_info
     x_u[INDX["p"     ]  + i] = db_max;
     x_u[INDX["q"     ]  + i] = db_max;
     x_u[INDX["r"     ]  + i] = db_max;
-    x_u[INDX["phi"   ]  + i] = +2.0 * PI;
-    x_u[INDX["theta" ]  + i] = +2.0 * PI;
-    x_u[INDX["psi"   ]  + i] = +2.0 * PI;
+    x_u[INDX["phi"   ]  + i] = db_max;
+    x_u[INDX["theta" ]  + i] = db_max;
+    x_u[INDX["psi"   ]  + i] = db_max;
     x_u[INDX["z"     ]  + i] = db_max;
     x_u[INDX["Vz"    ]  + i] = db_max;
     x_u[INDX["y"     ]  + i] = db_max;
@@ -248,27 +227,31 @@ bool QUAD_ROTOR_NLP::get_starting_point
     time[i] = ((t_f - t_0) * (T[i]) + (t_f + t_0)) / 2.0;
     //std::cout << "time[" << i << "]" << " : " << time[i] << std::endl;
   }
-  //myfile << "Initialization\n";
+  //std::ofstream myfile;
+  // myfile.open("output.txt");
+  // myfile << "Initialization\n";
   for (int i = 0 ; i <= N ; i++)
   {
-    x[INDX["p"     ]  + i] = 0.0;
-    x[INDX["q"     ]  + i] = 0.0;
-    x[INDX["r"     ]  + i] = 0.0;
-    x[INDX["phi"   ]  + i] = 0.0;
-    x[INDX["theta" ]  + i] = 0.0;
-    x[INDX["psi"   ]  + i] = 0.0;
-    x[INDX["z"     ]  + i] = 0.0;
-    x[INDX["Vz"    ]  + i] = 0.0;
-    x[INDX["y"     ]  + i] = 0.0;
-    x[INDX["Vy"    ]  + i] = 0.0;
-    x[INDX["x"     ]  + i] = 0.0;
-    x[INDX["Vx"    ]  + i] = 0.0;
-    x[INDX["netT"  ]  + i] = 0.0;
-    x[INDX["Mx"    ]  + i] = 0.0;
-    x[INDX["My"    ]  + i] = 0.0;
-    x[INDX["Mz"    ]  + i] = 0.0;
+    x[INDX["p"     ]  + i] = rndm;
+    //myfile << "p[" << i << "] : " << x[INDX["p"     ]  + i];
+    x[INDX["q"     ]  + i] = rndm;
+    x[INDX["r"     ]  + i] = rndm;
+    x[INDX["phi"   ]  + i] = rndm;
+    x[INDX["theta" ]  + i] = rndm;
+    x[INDX["psi"   ]  + i] = rndm;
+    x[INDX["z"     ]  + i] = rndm;
+    x[INDX["Vz"    ]  + i] = rndm;
+    x[INDX["y"     ]  + i] = rndm;
+    x[INDX["Vy"    ]  + i] = rndm;
+    x[INDX["x"     ]  + i] = rndm;
+    x[INDX["Vx"    ]  + i] = rndm;
+    x[INDX["netT"  ]  + i] = rndm;
+    x[INDX["Mx"    ]  + i] = rndm;
+    x[INDX["My"    ]  + i] = rndm;
+    x[INDX["Mz"    ]  + i] = rndm;
   }
-  x[n - 1] = t_f;  // initial guess for finial time (take some high values)
+  //myfile.close();
+  //x[n - 1] = t_f;  // initial guess for finial time (take some high values)
   return true;
 }
 
@@ -324,9 +307,11 @@ Number QUAD_ROTOR_NLP::Obj_func
     {
       for (Index j = 0 ; j < sz_X ; j++)
       {
+
         if (i == j)
         {
-          Q[i][j] = 1.0 / (X[i] * X[i]);
+          Q[i][j] = 1.0;
+          //Q[i][j] = 1.0 / (X[i] * X[i]);
         } else
         {
           Q[i][j] = 0.0;
@@ -340,7 +325,8 @@ Number QUAD_ROTOR_NLP::Obj_func
       {
         if (i == j)
         {
-          R[i][j] = 1.0 / (U[i] * U[i]);
+          R[i][j] = 1.0;
+          //R[i][j] = 1.0 / (U[i] * U[i]);
         } else
         {
           R[i][j] = 0.0;
@@ -405,18 +391,12 @@ Number QUAD_ROTOR_NLP::grad_at_x
 {
   string state_var[no_of_stt_var + no_of_ctrl_var] = {"p", "q" , "r", "phi", "theta", "psi", "z", "Vz", "y", "Vy", "x", "Vx", "netT", "Mx", "My", "Mz"};
   Index len =  no_of_stt_var + no_of_ctrl_var;
-  // declare X a copy array of same size of x
-  Number X[n];
-  // make a copy of x in X
-  for (Index k = 0; k < n; k++)
-  {
-    X[k] = x[k];
-  }
+
   for (Index nth = 0 ; nth < len ; nth++)
   {
     x[INDX[state_var[nth]]  + pos] += h;
   }
-  Number f_x_p_h = Obj_func(X, n);
+  Number f_x_p_h = Obj_func(x, n);
 
   for (Index nth = 0 ; nth < len ; nth++)
   {
@@ -428,7 +408,7 @@ Number QUAD_ROTOR_NLP::grad_at_x
     x[INDX[state_var[nth]]  + pos] -= h;
   }
 
-  Number f_x_m_h = Obj_func(X, n);
+  Number f_x_m_h = Obj_func(x, n);
 
   Number grad = (f_x_p_h - f_x_m_h) / (2.0 * h);
   for (Index nth = 0 ; nth < len ; nth++)
@@ -608,7 +588,7 @@ bool QUAD_ROTOR_NLP::eval_g
   // g[nth++] = x[INDX["Mx"   ]  + k] - /*final value of "Mx"   */;
   // g[nth++] = x[INDX["My"   ]  + k] - /*final value of "My"   */;
   // g[nth++] = x[INDX["Mz"   ]  + k] - /*final value of "Mz"   */;
-
+  assert(nth == m);
   return true;
 }
 

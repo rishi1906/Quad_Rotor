@@ -79,6 +79,31 @@ int main() {
 		std::cout << it->first << " " << it->second << "\n";
 	}
 	//cout << INDX["_p_"];
+	// double max = 999.99;
+	// double min = -999.99;
+	// cout << (max - min) * ( (double)rand() / (double)RAND_MAX ) + min;
+	// cout << (max - min) * ( (double)rand() / (double)RAND_MAX ) + min;
+	// cout << (max - min) * ( (double)rand() / (double)RAND_MAX ) + min;
+
+	double A[12][12];
+	std::ifstream f1;
+	f1.open("../Inputs/A.txt");
+	for (int i = 0 ; i < 12 ; i++)
+	{
+		for (int j = 0 ; j < 12 ; j++)
+		{
+			f1 >> A[i][j];
+
+		} //cout << endl;
+	}
+	f1.close();
+	for (int i = 0 ; i < 12 ; i++)
+	{
+		for (int j = 0 ; j < 12 ; j++)
+		{
+			cout << A[i][j] << " ";
+		} cout << endl;
+	}
 
 	return (0);
 }

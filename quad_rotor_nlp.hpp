@@ -194,6 +194,18 @@ private:
   // unordered map to save the locations of the indecies
   std::map <string, int> INDX;
   //std::set<std::pair<std::string, int>, comp> _Index_;
+  Number Obj_func
+  (
+    Number* x,
+    Index N
+  );
+  Number grad_at_x
+  (
+    Number * x, //
+    Index pos,//
+    Index n, //
+    Number h
+  );
 };
 
 #endif

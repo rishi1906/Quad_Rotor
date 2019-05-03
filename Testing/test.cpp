@@ -5,7 +5,7 @@
 #include <utility>
 #include <set>
 using namespace std;
-#define nxt_indx (((++idx) * N) + idx)
+#define nxt_indx (((idx+1) * N) + (idx+1))
 
 struct comp
 {
@@ -26,19 +26,33 @@ void get_indices(int N)
 	int idx = 0;
 	INDX.insert(make_pair("p"    , idx));
 	INDX.insert(make_pair("q"    , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("r"    , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("phi"  , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("theta", nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("psi"  , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("z"    , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("Vz"   , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("y"    , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("Vy"   , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("x"    , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("Vx"   , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("netT" , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("Mx"   , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("My"   , nxt_indx));
+	idx += 1;
 	INDX.insert(make_pair("Mz"   , nxt_indx));
 };
 

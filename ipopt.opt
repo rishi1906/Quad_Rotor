@@ -1,5 +1,5 @@
 #max_iter 1
-tol 1e-3
+tol 1e-4
 #acceptable_constr_viol_tol 0.001
 mu_strategy adaptive
 output_file ipopt.out

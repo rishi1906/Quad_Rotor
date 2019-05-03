@@ -90,7 +90,7 @@ QUAD_ROTOR_NLP::QUAD_ROTOR_NLP
 
   for (Index i = 0; i <= N; i++)
   {
-    std::cout << "T[" << i << "]" << " : " << T[i] << "\n";
+    //std::cout << "T[" << i << "]" << " : " << T[i] << "\n";
     file << T[i] << "\n";
   }
   file.close();
@@ -152,7 +152,7 @@ bool QUAD_ROTOR_NLP::get_bounds_info
   assert(n == ((no_of_stt_var + no_of_ctrl_var) * (N + 1)));
   assert(m == ((N + 1) * no_of_stt_var));
 
-  // Lower bounds
+  // Lower Bounds
   for (int i = 0 ; i <= N ; i++)
   {
     x_l[INDX["p"     ]  + i] = db_min;
@@ -194,7 +194,7 @@ bool QUAD_ROTOR_NLP::get_bounds_info
     x_u[INDX["Mz"    ]  + i] = db_max;
   }
 
-  // set bounds on constraints for ineuality constraints
+  // set bounds on constraints for inequality constraints
   return true;
 }
 
@@ -227,13 +227,13 @@ bool QUAD_ROTOR_NLP::get_starting_point
     time[i] = ((t_f - t_0) * (T[i]) + (t_f + t_0)) / 2.0;
     //std::cout << "time[" << i << "]" << " : " << time[i] << std::endl;
   }
-  //std::ofstream myfile;
-  // myfile.open("output.txt");
-  // myfile << "Initialization\n";
+  std::ofstream myfile;
+  myfile.open("output.txt");
+  myfile << "Initialization\n";
   for (int i = 0 ; i <= N ; i++)
   {
     x[INDX["p"     ]  + i] = rndm;
-    //myfile << "p[" << i << "] : " << x[INDX["p"     ]  + i];
+    myfile << "p[" << i << "] : " << x[INDX["p"     ]  + i];
     x[INDX["q"     ]  + i] = rndm;
     x[INDX["r"     ]  + i] = rndm;
     x[INDX["phi"   ]  + i] = rndm;
@@ -250,7 +250,7 @@ bool QUAD_ROTOR_NLP::get_starting_point
     x[INDX["My"    ]  + i] = rndm;
     x[INDX["Mz"    ]  + i] = rndm;
   }
-  //myfile.close();
+  myfile.close();
   //x[n - 1] = t_f;  // initial guess for finial time (take some high values)
   return true;
 }
@@ -550,7 +550,7 @@ bool QUAD_ROTOR_NLP::eval_g
   {
     std::vector<Number > k_U(no_of_ctrl_var);
     Index i = 0;
-    k_U[++i] = x[INDX["netT" ]  + k];
+    k_U[  i] = x[INDX["netT" ]  + k];
     k_U[++i] = x[INDX["Mx"   ]  + k];
     k_U[++i] = x[INDX["My"   ]  + k];
     k_U[++i] = x[INDX["Mz"   ]  + k];

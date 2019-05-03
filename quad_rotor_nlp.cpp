@@ -25,7 +25,7 @@ using namespace Ipopt;
 // define size of stepsize for finite difference scheme to find gradient
 const Number step_size = 1e-8;
 const Number t_0 = 0.00;
-const Number t_f = 60.0;
+const Number t_f = 10.0;
 const Number mx = 999.999;
 const Number mn = -999.999;
 const Index no_of_stt_var = 12 ; // define the length of X
@@ -227,9 +227,17 @@ bool QUAD_ROTOR_NLP::get_starting_point
     time[i] = ((t_f - t_0) * (T[i]) + (t_f + t_0)) / 2.0;
     //std::cout << "time[" << i << "]" << " : " << time[i] << std::endl;
   }
-  std::ofstream myfile;
-  myfile.open("output.txt");
-  myfile << "Initialization\n";
+  // std::ofstream myfile;
+  // myfile.open("output.txt");
+  //myfile << "Initialization\n";
+  std::ifstream f1;
+  f1.open("./Inputs/x.txt");
+  for (integer i = 0 ; i < n ; i++)
+  {
+    f1 >> x[i];
+  }
+  f1.close();
+  /*
   Number prtb = 1.0;
   Number del_prtb = 0.1;
   for (int i = 0 ; i <= N ; i++)
@@ -253,6 +261,7 @@ bool QUAD_ROTOR_NLP::get_starting_point
     x[INDX["Mz"    ]  + i] = prtb - i * del_prtb;
   }
   myfile.close();
+  */
   //x[n - 1] = t_f;  // initial guess for finial time (take some high values)
   return true;
 }
@@ -718,7 +727,7 @@ void QUAD_ROTOR_NLP::finalize_solution
   //Number tf = 1.25;
   for (Index i = 0; i <= N; i++)
   {
-    time[i] = (x[n - 1] / 2.0) * (T[i] + 1.0);
+    time[i] = (t_f / 2.0) * (T[i] + 1.0);
     std::cout << "t[" << i << "]" << " : " << time[i] << std::endl;
   }
 

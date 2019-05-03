@@ -263,9 +263,6 @@ Number QUAD_ROTOR_NLP::Obj_func
 )
 {
 
-  Index sz_X = (no_of_stt_var * N) + no_of_stt_var;
-  Index sz_U = (no_of_ctrl_var * N) + no_of_ctrl_var;
-
   //define weights
   std::vector<Number> w; // weights
   w = compute_integral_weights<Number, Index>(N + 1);
@@ -273,8 +270,8 @@ Number QUAD_ROTOR_NLP::Obj_func
   Number obj_value = 0.0;
   for (Index k = 0 ; k <= N ; k++)
   {
-    std::vector<Number > X(sz_X ), U(sz_U), QX(sz_X), RU(sz_U);
-    std::vector<std::vector<Number > > Q(sz_X, std::vector<decimal > (sz_X)), R(sz_U, std::vector<decimal > (sz_U));
+    std::vector<Number > X(no_of_stt_var ), U(no_of_ctrl_var), QX(no_of_stt_var), RU(no_of_ctrl_var);
+    std::vector<std::vector<Number > > Q(no_of_stt_var, std::vector<decimal > (no_of_stt_var)), R(no_of_ctrl_var, std::vector<decimal > (no_of_ctrl_var));
 
     Number XTQX = 0.0, UTRU = 0.0;
 
@@ -292,20 +289,18 @@ Number QUAD_ROTOR_NLP::Obj_func
     X[++i] = x[INDX["Vy"   ]  + k];
     X[++i] = x[INDX["x"    ]  + k];
     X[++i] = x[INDX["Vx"   ]  + k];
-    X[++i] = x[INDX["netT" ]  + k];
-    X[++i] = x[INDX["Mx"   ]  + k];
-    X[++i] = x[INDX["My"   ]  + k];
-    X[++i] = x[INDX["Mz"   ]  + k];
 
     //define U
-    for (Index i = 0 ; i < sz_U ; i++)
-    {
-      U[i] = x[i + sz_X];
-    }
+    i = 0;
+    U[  i] = x[INDX["netT" ]  + k];
+    U[++i] = x[INDX["Mx"   ]  + k];
+    U[++i] = x[INDX["My"   ]  + k];
+    U[++i] = x[INDX["Mz"   ]  + k];
+
     //define Q
-    for (Index i = 0 ; i < sz_X ; i++)
+    for (Index i = 0 ; i < no_of_stt_var ; i++)
     {
-      for (Index j = 0 ; j < sz_X ; j++)
+      for (Index j = 0 ; j < no_of_stt_var ; j++)
       {
 
         if (i == j)
@@ -319,9 +314,9 @@ Number QUAD_ROTOR_NLP::Obj_func
       }
     }
     //define R
-    for (Index i = 0 ; i < sz_U ; i++)
+    for (Index i = 0 ; i < no_of_ctrl_var ; i++)
     {
-      for (Index j = 0 ; j < sz_U ; j++)
+      for (Index j = 0 ; j < no_of_ctrl_var ; j++)
       {
         if (i == j)
         {
@@ -333,10 +328,10 @@ Number QUAD_ROTOR_NLP::Obj_func
         }
       }
     }
-    QX = multiply_M_V(Q, X, sz_X);
-    RU = multiply_M_V(R, U, sz_U);
-    XTQX = multiply_V_V(X, QX, sz_X);
-    UTRU = multiply_V_V(U, RU, sz_U);
+    QX = multiply_M_V(Q, X, no_of_stt_var);
+    RU = multiply_M_V(R, U, no_of_ctrl_var);
+    XTQX = multiply_V_V(X, QX, no_of_stt_var);
+    UTRU = multiply_V_V(U, RU, no_of_ctrl_var);
 
 
     //obj_value += (XTQX + UTRU) / 2.0;

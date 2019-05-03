@@ -34,9 +34,9 @@ const Number db_min = std::numeric_limits<double>::min();
 const Number db_max = std::numeric_limits<double>::max();
 // const Number db_min = -100.00;
 // const Number db_max = 100.00;
-// *  X = [p q r phi theta psi z Vz y Vy x Vx]'
-// *  U = [netT Mx My Mz]'
-// *  J = 1/2 integral(t_0,t_f,(X'.Q.X+U'.R.U))
+// *  X = [p q r phi theta psi z Vz y Vy x Vx]' // these are the pertubrations
+// *  U = [netT Mx My Mz]'  // these are the pertubrations
+// *  J = integral(t_0,t_f,(X'.Q.X+U'.R.U))
 
 std::map <string, int> get_indices(int N)
 {
@@ -230,25 +230,27 @@ bool QUAD_ROTOR_NLP::get_starting_point
   std::ofstream myfile;
   myfile.open("output.txt");
   myfile << "Initialization\n";
+  Number prtb = 1.0;
+  Number del_prtb = 0.1;
   for (int i = 0 ; i <= N ; i++)
   {
-    x[INDX["p"     ]  + i] = rndm;
+    x[INDX["p"     ]  + i] = prtb - i * del_prtb;
     myfile << "p[" << i << "] : " << x[INDX["p"     ]  + i];
-    x[INDX["q"     ]  + i] = rndm;
-    x[INDX["r"     ]  + i] = rndm;
-    x[INDX["phi"   ]  + i] = rndm;
-    x[INDX["theta" ]  + i] = rndm;
-    x[INDX["psi"   ]  + i] = rndm;
-    x[INDX["z"     ]  + i] = rndm;
-    x[INDX["Vz"    ]  + i] = rndm;
-    x[INDX["y"     ]  + i] = rndm;
-    x[INDX["Vy"    ]  + i] = rndm;
-    x[INDX["x"     ]  + i] = rndm;
-    x[INDX["Vx"    ]  + i] = rndm;
-    x[INDX["netT"  ]  + i] = rndm;
-    x[INDX["Mx"    ]  + i] = rndm;
-    x[INDX["My"    ]  + i] = rndm;
-    x[INDX["Mz"    ]  + i] = rndm;
+    x[INDX["q"     ]  + i] = prtb - i * del_prtb;
+    x[INDX["r"     ]  + i] = prtb - i * del_prtb;
+    x[INDX["phi"   ]  + i] = prtb - i * del_prtb;
+    x[INDX["theta" ]  + i] = prtb - i * del_prtb;
+    x[INDX["psi"   ]  + i] = prtb - i * del_prtb;
+    x[INDX["z"     ]  + i] = prtb - i * del_prtb;
+    x[INDX["Vz"    ]  + i] = prtb - i * del_prtb;
+    x[INDX["y"     ]  + i] = prtb - i * del_prtb;
+    x[INDX["Vy"    ]  + i] = prtb - i * del_prtb;
+    x[INDX["x"     ]  + i] = prtb - i * del_prtb;
+    x[INDX["Vx"    ]  + i] = prtb - i * del_prtb;
+    x[INDX["netT"  ]  + i] = prtb - i * del_prtb;
+    x[INDX["Mx"    ]  + i] = prtb - i * del_prtb;
+    x[INDX["My"    ]  + i] = prtb - i * del_prtb;
+    x[INDX["Mz"    ]  + i] = prtb - i * del_prtb;
   }
   myfile.close();
   //x[n - 1] = t_f;  // initial guess for finial time (take some high values)
@@ -565,24 +567,32 @@ bool QUAD_ROTOR_NLP::eval_g
       nth += 1;
     }
   }
+  A.clear();
+  B.clear();
+  C.clear();
+  D.clear();
+  DX.clear();
+  X.clear();
+  AX.clear();
+  BU.clear();
   //additional constraints initial values
-  k = 0;
-  g[nth++] = x[INDX["p"    ]  + k] - 1.0 /*intial value of "p"    */;
-  g[nth++] = x[INDX["q"    ]  + k] - 1.0 /*intial value of "q"    */;
-  g[nth++] = x[INDX["r"    ]  + k] - 1.0 /*intial value of "r"    */;
-  g[nth++] = x[INDX["phi"  ]  + k] - 1.0 /*intial value of "phi"  */;
-  g[nth++] = x[INDX["theta"]  + k] - 1.0 /*intial value of "theta"*/;
-  g[nth++] = x[INDX["psi"  ]  + k] - 1.0 /*intial value of "psi"  */;
-  g[nth++] = x[INDX["z"    ]  + k] - 1.0 /*intial value of "z"    */;
-  g[nth++] = x[INDX["Vz"   ]  + k] - 1.0 /*intial value of "Vz"   */;
-  g[nth++] = x[INDX["y"    ]  + k] - 1.0 /*intial value of "y"    */;
-  g[nth++] = x[INDX["Vy"   ]  + k] - 1.0 /*intial value of "Vy"   */;
-  g[nth++] = x[INDX["x"    ]  + k] - 1.0 /*intial value of "x"    */;
-  g[nth++] = x[INDX["Vx"   ]  + k] - 1.0 /*intial value of "Vx"   */;
-  g[nth++] = x[INDX["netT" ]  + k] - 1.0 /*intial value of "netT" */;
-  g[nth++] = x[INDX["Mx"   ]  + k] - 1.0 /*intial value of "Mx"   */;
-  g[nth++] = x[INDX["My"   ]  + k] - 1.0 /*intial value of "My"   */;
-  g[nth++] = x[INDX["Mz"   ]  + k] - 1.0 /*intial value of "Mz"   */;
+  Index kth = 0;
+  g[nth++] = x[INDX["p"    ]  + kth] - 1.0 /*intial value of "p"    */;
+  g[nth++] = x[INDX["q"    ]  + kth] - 1.0 /*intial value of "q"    */;
+  g[nth++] = x[INDX["r"    ]  + kth] - 1.0 /*intial value of "r"    */;
+  g[nth++] = x[INDX["phi"  ]  + kth] - 1.0 /*intial value of "phi"  */;
+  g[nth++] = x[INDX["theta"]  + kth] - 1.0 /*intial value of "theta"*/;
+  g[nth++] = x[INDX["psi"  ]  + kth] - 1.0 /*intial value of "psi"  */;
+  g[nth++] = x[INDX["z"    ]  + kth] - 1.0 /*intial value of "z"    */;
+  g[nth++] = x[INDX["Vz"   ]  + kth] - 1.0 /*intial value of "Vz"   */;
+  g[nth++] = x[INDX["y"    ]  + kth] - 1.0 /*intial value of "y"    */;
+  g[nth++] = x[INDX["Vy"   ]  + kth] - 1.0 /*intial value of "Vy"   */;
+  g[nth++] = x[INDX["x"    ]  + kth] - 1.0 /*intial value of "x"    */;
+  g[nth++] = x[INDX["Vx"   ]  + kth] - 1.0 /*intial value of "Vx"   */;
+  g[nth++] = x[INDX["netT" ]  + kth] - 1.0 /*intial value of "netT" */;
+  g[nth++] = x[INDX["Mx"   ]  + kth] - 1.0 /*intial value of "Mx"   */;
+  g[nth++] = x[INDX["My"   ]  + kth] - 1.0 /*intial value of "My"   */;
+  g[nth++] = x[INDX["Mz"   ]  + kth] - 1.0 /*intial value of "Mz"   */;
   assert(nth == m);
   return true;
 }
@@ -747,7 +757,7 @@ void QUAD_ROTOR_NLP::finalize_solution
   for (Index i = 0; i < m; i++) {
     std::cout << "g(" << i << ") = " << g[i] << std::endl;
   }
-
+  time.clear();
   // Analytical Solution
   /*std::cout << std::endl
             << std::endl

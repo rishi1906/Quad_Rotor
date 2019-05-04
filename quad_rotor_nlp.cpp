@@ -227,16 +227,25 @@ bool QUAD_ROTOR_NLP::get_starting_point
     time[i] = ((t_f - t_0) * (T[i]) + (t_f + t_0)) / 2.0;
     //std::cout << "time[" << i << "]" << " : " << time[i] << std::endl;
   }
-  // std::ofstream myfile;
-  // myfile.open("output.txt");
-  //myfile << "Initialization\n";
+
   std::ifstream f1;
   f1.open("./Inputs/x.txt");
   for (integer i = 0 ; i < n ; i++)
   {
     f1 >> x[i];
+    //myfile << x[i] << " ";
   }
   f1.close();
+
+  std::ofstream myfile;
+  myfile.open("output.txt");
+  myfile << "Initialization\n";
+  for (integer i = 0 ; i < n ; i++)
+  {
+    f1 >> x[i];
+    myfile << x[i] << " ";
+  }
+  myfile.close();
   /*
   Number prtb = 1.0;
   Number del_prtb = 0.1;
@@ -259,9 +268,9 @@ bool QUAD_ROTOR_NLP::get_starting_point
     x[INDX["Mx"    ]  + i] = prtb - i * del_prtb;
     x[INDX["My"    ]  + i] = prtb - i * del_prtb;
     x[INDX["Mz"    ]  + i] = prtb - i * del_prtb;
-  }
-  myfile.close();
-  */
+  }*/
+
+
   //x[n - 1] = t_f;  // initial guess for finial time (take some high values)
   return true;
 }

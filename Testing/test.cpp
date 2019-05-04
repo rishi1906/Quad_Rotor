@@ -96,14 +96,28 @@ int main() {
 
 		} //cout << endl;
 	}
-	f1.close();
-	for (int i = 0 ; i < 12 ; i++)
+	// f1.close();
+	// for (int i = 0 ; i < 12 ; i++)
+	// {
+	// 	for (int j = 0 ; j < 12 ; j++)
+	// 	{
+	// 		cout << A[i][j] << " ";
+	// 	} cout << endl;
+	// }
+	std::ifstream f2;
+	int n = (12 + 4) * 101;
+	double x[n];
+	f2.open("./Inputs/x.txt");
+	for (int i = 0 ; i < n ; i++)
 	{
-		for (int j = 0 ; j < 12 ; j++)
-		{
-			cout << A[i][j] << " ";
-		} cout << endl;
-	}
+		f2 >> x[i];
 
+	}
+	f2.close();
+	for (int i = 0 ; i < n ; i++)
+	{
+		cout << x[i] << "\n";
+
+	}
 	return (0);
 }

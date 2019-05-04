@@ -299,7 +299,7 @@ Number QUAD_ROTOR_NLP::Obj_func
   w = compute_integral_weights<Number, Index>(N + 1);
 
   Number obj_value = 0.0;
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = N ; k >= 0 ; k--)
   {
     std::vector<Number > X(n_s ), U(n_c), QX(n_s), RU(n_c);
     std::vector<std::vector<Number > > Q(n_s, std::vector<Number > (n_s)), R(n_c, std::vector<Number > (n_c));
@@ -502,7 +502,7 @@ bool QUAD_ROTOR_NLP::eval_g
   D = formulate_differentiation_matrix<Number, Index>(C, T, N + 1);
 
   // form X
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = N ; k >= 0 ; k--)
   {
     std::vector<Number > k_X(n_s);
     Index i = 0;
@@ -539,7 +539,7 @@ bool QUAD_ROTOR_NLP::eval_g
   }
   f1.close();
 
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = N ; k >= 0 ; k--)
   {
     std::vector<Number > k_X(n_s), k_AX(n_s);
     Index i = 0;
@@ -573,7 +573,7 @@ bool QUAD_ROTOR_NLP::eval_g
     }
   }
   f2.close();
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = N ; k >= 0 ; k--)
   {
     std::vector<Number > k_U(n_c), k_BU(n_c);
 
@@ -761,7 +761,7 @@ void QUAD_ROTOR_NLP::finalize_solution
     const char* fn = file_name.c_str();
     myfile.open(fn);
     //std::cout << state_var[i] << "\n";
-    for (Index k = 0; k <= N; k++) {
+    for (Index k = N; k >= 0; k--) {
       //std::cout << x[i] << std::endl;
       myfile << time[k] << "," << x[INDX[state_var[i]]  + k] << "\n";
     }

@@ -1,4 +1,4 @@
 clear
 rm *.o
 make
-./quad_rotor_cpp 10
+gdb --args ./quad_rotor_cpp 10

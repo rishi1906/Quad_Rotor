@@ -153,7 +153,7 @@ bool QUAD_ROTOR_NLP::get_bounds_info
   assert(m == (((N + 1) * no_of_stt_var) + (no_of_stt_var + no_of_ctrl_var)));
 
   // Lower Bounds
-  for (int i = 0 ; i <= N ; i++)
+  /*for (int i = 0 ; i <= N ; i++)
   {
     x_l[INDX["p"     ]  + i] = db_min;
     x_l[INDX["q"     ]  + i] = db_min;
@@ -171,9 +171,14 @@ bool QUAD_ROTOR_NLP::get_bounds_info
     x_l[INDX["Mx"    ]  + i] = db_min;
     x_l[INDX["My"    ]  + i] = db_min;
     x_l[INDX["Mz"    ]  + i] = db_min;
+  }*/
+  for (int i = 0 ; i < n ; i++)
+  {
+    x_l[i] = db_min;
   }
 
   // Upper Bounds
+  /*
   for (int i = 0 ; i <= N ; i++)
   {
     x_u[INDX["p"     ]  + i] = db_max;
@@ -193,7 +198,11 @@ bool QUAD_ROTOR_NLP::get_bounds_info
     x_u[INDX["My"    ]  + i] = db_max;
     x_u[INDX["Mz"    ]  + i] = db_max;
   }
-
+  */
+  for (int i = 0 ; i < n ; i++)
+  {
+    x_u[i] = db_max;
+  }
   // set bounds on constraints for inequality constraints
   return true;
 }

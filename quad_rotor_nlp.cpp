@@ -122,7 +122,7 @@ bool QUAD_ROTOR_NLP::get_nlp_info
   n = ((n_s + n_c) * (N + 1));
 
   // size of constraints
-  m = (((N + 1) * n_s) + (n_s + n_c));
+  m = (((N + 1) * n_s) + (2*n_s));
 
   // size of jacobian matrix
   nnz_jac_g = m * n;
@@ -152,7 +152,7 @@ bool QUAD_ROTOR_NLP::get_bounds_info
 
   //assertain the values of m and n
   assert(n == ((n_s + n_c) * (N + 1)));
-  assert(m == (((N + 1) * n_s) + (n_s + n_c)));
+  assert(m == (((N + 1) * n_s) + (2*n_s)));
 
   // Lower Bounds
   /*for (int i = 0 ; i <= N ; i++)
@@ -485,7 +485,7 @@ bool QUAD_ROTOR_NLP::eval_g
 )
 {
   assert(n == ((n_s + n_c) * (N + 1)));
-  assert(m == (((N + 1) * n_s) + (n_s + n_c)));
+  assert(m == (((N + 1) * n_s) + (2*n_s)));
 
   //Index sz_X = (n_s * N) + n_s;
   //Index sz_U = (n_c * N) + n_c;
@@ -621,10 +621,29 @@ bool QUAD_ROTOR_NLP::eval_g
   g[nth++] = x[INDX["Vy"   ]+N] - 1.0; /*intial value of "Vy"   */
   g[nth++] = x[INDX["x"    ]+N] - 1.0; /*intial value of "x"    */
   g[nth++] = x[INDX["Vx"   ]+N] - 1.0; /*intial value of "Vx"   */
-  g[nth++] = x[INDX["netT" ]+N] - 1.0; /*intial value of "netT" */
-  g[nth++] = x[INDX["Mx"   ]+N] - 1.0; /*intial value of "Mx"   */
-  g[nth++] = x[INDX["My"   ]+N] - 1.0; /*intial value of "My"   */
-  g[nth++] = x[INDX["Mz"   ]+N] - 1.0; /*intial value of "Mz"   */
+  // g[nth++] = x[INDX["netT" ]+N] - 1.0; /*intial value of "netT" */
+  // g[nth++] = x[INDX["Mx"   ]+N] - 1.0; /*intial value of "Mx"   */
+  // g[nth++] = x[INDX["My"   ]+N] - 1.0; /*intial value of "My"   */
+  // g[nth++] = x[INDX["Mz"   ]+N] - 1.0; /*intial value of "Mz"   */
+
+  // additional constraints final values 
+  g[nth++] = x[INDX["p"    ]]; /*final value of "p"    */
+  g[nth++] = x[INDX["q"    ]]; /*final value of "q"    */
+  g[nth++] = x[INDX["r"    ]]; /*final value of "r"    */
+  g[nth++] = x[INDX["phi"  ]]; /*final value of "phi"  */
+  g[nth++] = x[INDX["theta"]]; /*final value of "theta"*/
+  g[nth++] = x[INDX["psi"  ]]; /*final value of "psi"  */
+  g[nth++] = x[INDX["z"    ]]; /*final value of "z"    */
+  g[nth++] = x[INDX["Vz"   ]]; /*final value of "Vz"   */
+  g[nth++] = x[INDX["y"    ]]; /*final value of "y"    */
+  g[nth++] = x[INDX["Vy"   ]]; /*final value of "Vy"   */
+  g[nth++] = x[INDX["x"    ]]; /*final value of "x"    */
+  g[nth++] = x[INDX["Vx"   ]]; /*final value of "Vx"   */
+  // g[nth++] = x[INDX["netT" ]]; /*final value of "netT" */
+  // g[nth++] = x[INDX["Mx"   ]]; /*final value of "Mx"   */
+  // g[nth++] = x[INDX["My"   ]]; /*final value of "My"   */
+  // g[nth++] = x[INDX["Mz"   ]]; /*final value of "Mz"   */
+
   //assert(nth == m);
   return true;
 }
@@ -644,7 +663,7 @@ bool QUAD_ROTOR_NLP::eval_jac_g
 )
 {
   assert(n == ((n_s + n_c) * (N + 1)));
-  assert(m == (((N + 1) * n_s) + (n_s + n_c)));
+  assert(m == (((N + 1) * n_s) + (2*n_s)));
 
   if (values == NULL) {
     // return the structure of the Jacobian

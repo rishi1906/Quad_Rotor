@@ -10,7 +10,7 @@
 #include "Differentiation_Matrix.cpp"
 #include "Integral_Weights.cpp"
 #define PI acos(-1)
-#define f(val) tan(val)
+#define f(val) cos(val)
 using namespace std;
 
 int main()
@@ -35,8 +35,8 @@ int main()
 	std::ofstream myfile;
 	myfile.open("test_output_1.txt");
 	for (int i = 0 ; i <= n ; i++) {
-		//X[i] = f(t[i]);
-		X[i] = t[i] * t[i] - 1;
+		X[i] = f(t[i]);
+		//X[i] = t[i] * t[i] - 1;
 		//X[i] = exp(t[i]);
 		//X[i] = 1;
 		//X[i] = t[i];

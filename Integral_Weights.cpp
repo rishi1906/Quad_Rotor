@@ -14,7 +14,7 @@ std::vector<decimal > compute_integral_weights(integer N_)
 {
 	//cout << "Entered\n";
 	integer N = N_ - 1;
-	std::vector<decimal > w(N);
+	std::vector<decimal > w(N_);
 
 	if (N % 2 == 0)
 	{

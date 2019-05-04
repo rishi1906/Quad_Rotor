@@ -30,10 +30,10 @@ const Number mx = 999.999;
 const Number mn = -999.999;
 const Index no_of_stt_var = 12 ; // define the length of X
 const Index no_of_ctrl_var = 4 ; // define the length of U
-const Number db_min = std::numeric_limits<double>::min();
-const Number db_max = std::numeric_limits<double>::max();
-// const Number db_min = -100.00;
-// const Number db_max = 100.00;
+// const Number db_min = std::numeric_limits<double>::min();
+// const Number db_max = std::numeric_limits<double>::max();
+const Number db_min = -999.00;
+const Number db_max = 999.00;
 // *  X = [p q r phi theta psi z Vz y Vy x Vx]' // these are the pertubrations
 // *  U = [netT Mx My Mz]'  // these are the pertubrations
 // *  J = integral(t_0,t_f,(X'.Q.X+U'.R.U))
@@ -284,7 +284,7 @@ Number QUAD_ROTOR_NLP::Obj_func
 {
 
   //define weights
-  std::vector<Number> w; // weights
+  std::vector<Number> w(N + 1); // weights
   w = compute_integral_weights<Number, Index>(N + 1);
 
   Number obj_value = 0.0;
@@ -348,10 +348,10 @@ Number QUAD_ROTOR_NLP::Obj_func
         }
       }
     }
-    QX = multiply_M_V(Q, X, no_of_stt_var);
-    RU = multiply_M_V(R, U, no_of_ctrl_var);
-    XTQX = multiply_V_V(X, QX, no_of_stt_var);
-    UTRU = multiply_V_V(U, RU, no_of_ctrl_var);
+    QX = multiply_M_V<Number, Index>(Q, X, no_of_stt_var);
+    RU = multiply_M_V<Number, Index>(R, U, no_of_ctrl_var);
+    XTQX = multiply_V_V<Number, Index>(X, QX, no_of_stt_var);
+    UTRU = multiply_V_V<Number, Index>(U, RU, no_of_ctrl_var);
 
 
     //obj_value += (XTQX + UTRU) / 2.0;
@@ -454,7 +454,7 @@ bool QUAD_ROTOR_NLP::eval_grad_f
   }
   Number h = step_size;
 
-  for (Index at = 0; at <= n; at++)
+  for (Index at = 0; at < n; at++)
   {
     Number val = grad_at_x(X, at, n, h);
     grad_f[at] = val;
@@ -513,15 +513,15 @@ bool QUAD_ROTOR_NLP::eval_g
   }
 
   // matrix multiply D and X
-  DX = multiply_M_M(D, X, (N + 1), no_of_stt_var);
+  DX = multiply_M_M<Number, Index>(D, X, (N + 1), no_of_stt_var);
 
   // form AX
   // read A
   std::ifstream f1;
   f1.open("./Inputs/A.txt");
-  for (integer i = 0 ; i < no_of_stt_var ; i++)
+  for (Index i = 0 ; i < no_of_stt_var ; i++)
   {
-    for (integer j = 0 ; j < no_of_stt_var ; j++)
+    for (Index j = 0 ; j < no_of_stt_var ; j++)
     {
       f1 >> A[i][j];
     }
@@ -530,7 +530,7 @@ bool QUAD_ROTOR_NLP::eval_g
 
   for (Index k = 0 ; k <= N ; k++)
   {
-    std::vector<Number > k_X(no_of_stt_var);
+    std::vector<Number > k_X(no_of_stt_var), k_AX(no_of_stt_var);
     Index i = 0;
     k_X[  i] = x[INDX["p"    ]  + k];
     k_X[++i] = x[INDX["q"    ]  + k];
@@ -544,18 +544,19 @@ bool QUAD_ROTOR_NLP::eval_g
     k_X[++i] = x[INDX["Vy"   ]  + k];
     k_X[++i] = x[INDX["x"    ]  + k];
     k_X[++i] = x[INDX["Vx"   ]  + k];
-
-    AX.push_back(multiply_M_V(A, k_X, no_of_stt_var));
+    k_AX = multiply_M_V<Number, Index>(A, k_X, no_of_stt_var);
+    AX.push_back(k_AX);
     k_X.clear();
+    k_AX.clear();
   }
 
   // form BX
   // read B
   std::ifstream f2;
   f2.open("./Inputs/B.txt");
-  for (integer i = 0 ; i < no_of_stt_var ; i++)
+  for (Index i = 0 ; i < no_of_stt_var ; i++)
   {
-    for (integer j = 0 ; j < no_of_ctrl_var ; j++)
+    for (Index j = 0 ; j < no_of_ctrl_var ; j++)
     {
       f2 >> B[i][j];
     }
@@ -563,15 +564,17 @@ bool QUAD_ROTOR_NLP::eval_g
   f2.close();
   for (Index k = 0 ; k <= N ; k++)
   {
-    std::vector<Number > k_U(no_of_ctrl_var);
+    std::vector<Number > k_U(no_of_ctrl_var), k_BU(no_of_ctrl_var);
+
     Index i = 0;
     k_U[  i] = x[INDX["netT" ]  + k];
     k_U[++i] = x[INDX["Mx"   ]  + k];
     k_U[++i] = x[INDX["My"   ]  + k];
     k_U[++i] = x[INDX["Mz"   ]  + k];
-
-    BU.push_back(multiply_M_V<Number, Index>(B, k_U, N + 1, no_of_ctrl_var));
+    k_BU = multiply_M_V<Number, Index>(B, k_U, N + 1, no_of_ctrl_var);
+    BU.push_back(k_BU);
     k_U.clear();
+    k_BU.clear();
   }
 
   // define constraints
@@ -594,24 +597,24 @@ bool QUAD_ROTOR_NLP::eval_g
   AX.clear();
   BU.clear();
   //additional constraints initial values
-  Index kth = 0;
-  g[nth++] = x[INDX["p"    ]  + kth] - 1.0 /*intial value of "p"    */;
-  g[nth++] = x[INDX["q"    ]  + kth] - 1.0 /*intial value of "q"    */;
-  g[nth++] = x[INDX["r"    ]  + kth] - 1.0 /*intial value of "r"    */;
-  g[nth++] = x[INDX["phi"  ]  + kth] - 1.0 /*intial value of "phi"  */;
-  g[nth++] = x[INDX["theta"]  + kth] - 1.0 /*intial value of "theta"*/;
-  g[nth++] = x[INDX["psi"  ]  + kth] - 1.0 /*intial value of "psi"  */;
-  g[nth++] = x[INDX["z"    ]  + kth] - 1.0 /*intial value of "z"    */;
-  g[nth++] = x[INDX["Vz"   ]  + kth] - 1.0 /*intial value of "Vz"   */;
-  g[nth++] = x[INDX["y"    ]  + kth] - 1.0 /*intial value of "y"    */;
-  g[nth++] = x[INDX["Vy"   ]  + kth] - 1.0 /*intial value of "Vy"   */;
-  g[nth++] = x[INDX["x"    ]  + kth] - 1.0 /*intial value of "x"    */;
-  g[nth++] = x[INDX["Vx"   ]  + kth] - 1.0 /*intial value of "Vx"   */;
-  g[nth++] = x[INDX["netT" ]  + kth] - 1.0 /*intial value of "netT" */;
-  g[nth++] = x[INDX["Mx"   ]  + kth] - 1.0 /*intial value of "Mx"   */;
-  g[nth++] = x[INDX["My"   ]  + kth] - 1.0 /*intial value of "My"   */;
-  g[nth++] = x[INDX["Mz"   ]  + kth] - 1.0 /*intial value of "Mz"   */;
-  assert(nth == m);
+
+  g[nth++] = x[INDX["p"    ]];  /*intial value of "p"    */
+  g[nth++] = x[INDX["q"    ]];  /*intial value of "q"    */
+  g[nth++] = x[INDX["r"    ]];  /*intial value of "r"    */
+  g[nth++] = x[INDX["phi"  ]];  /*intial value of "phi"  */
+  g[nth++] = x[INDX["theta"]];  /*intial value of "theta"*/
+  g[nth++] = x[INDX["psi"  ]];  /*intial value of "psi"  */
+  g[nth++] = x[INDX["z"    ]];  /*intial value of "z"    */
+  g[nth++] = x[INDX["Vz"   ]];  /*intial value of "Vz"   */
+  g[nth++] = x[INDX["y"    ]];  /*intial value of "y"    */
+  g[nth++] = x[INDX["Vy"   ]];  /*intial value of "Vy"   */
+  g[nth++] = x[INDX["x"    ]];  /*intial value of "x"    */
+  g[nth++] = x[INDX["Vx"   ]];  /*intial value of "Vx"   */
+  g[nth++] = x[INDX["netT" ]];  /*intial value of "netT" */
+  g[nth++] = x[INDX["Mx"   ]];  /*intial value of "Mx"   */
+  g[nth++] = x[INDX["My"   ]];  /*intial value of "My"   */
+  g[nth++] = x[INDX["Mz"   ]];  /*intial value of "Mz"   */
+  //assert(nth == m);
   return true;
 }
 
@@ -753,7 +756,7 @@ void QUAD_ROTOR_NLP::finalize_solution
     //myfile.close();
   }
 
-  std::cout << x[n - 1] << std::endl;
+  //std::cout << x[n - 1] << std::endl;
 
   // std::cout << std::endl << std::endl << "Solution of the bound
   // multipliers,

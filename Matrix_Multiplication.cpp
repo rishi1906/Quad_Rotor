@@ -17,7 +17,7 @@ std::vector<decimal> multiply_M_V
   integer sz
 )
 {
-  std::vector<decimal> P;
+  std::vector<decimal> P(sz);
   for (integer i = 0 ; i < sz ; i++)
   {
     decimal prod = 0.0;
@@ -40,7 +40,7 @@ std::vector<decimal> multiply_M_V
   integer sz2
 )
 {
-  std::vector<decimal> P;
+  std::vector<decimal> P(sz1);
   for (integer i = 0 ; i < sz1 ; i++)
   {
     decimal prod = 0.0;

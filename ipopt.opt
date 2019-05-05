@@ -1,4 +1,4 @@
-#max_iter 1
+max_iter 10000
 tol 1e-4
 #acceptable_constr_viol_tol 0.001
 mu_strategy adaptive

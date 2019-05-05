@@ -32,7 +32,7 @@ decimal multiply_V_V
 );
 
 template<class decimal, class integer>
-std::vector<std::vector<decimal > > multiply_D_X
+std::vector<std::vector<decimal > > multiply_M_M
 (
     const std::vector<std::vector<decimal > >& D,  // matrix D
     const std::vector<decimal >& X,  // vector X

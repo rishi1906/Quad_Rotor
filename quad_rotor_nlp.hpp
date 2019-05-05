@@ -203,7 +203,7 @@ private:
   (
     Number * x, //
     Index pos,//
-    Index n, //
+    Index N, //
     Number h
   );
 };

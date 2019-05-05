@@ -88,7 +88,7 @@ std::vector<std::vector<decimal > > multiply_M_M
       prod[i][j] = 0.0;
       for (integer k = 0 ; k < N ; k++)
       {
-        prod[i][j] = prod[i][j] + (D[i][k] * X[j][k]);
+        prod[i][j] = prod[i][j] + (D[i][k] * X[k][j]);
       }
     }
     //D.clear();

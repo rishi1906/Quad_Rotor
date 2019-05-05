@@ -34,7 +34,7 @@ ADDINCFLAGS = -I/home/dell/Quad_Rotor
 ##########################################################################
 
 # C++ Compiler command
-CXX = g++ -g
+CXX = g++ -mpreferred-stack-boundary=12 -g
 
 # C++ Compiler options
 CXXFLAGS = -O3 -pipe -DNDEBUG -Wparentheses -Wreturn-type -Wcast-qual -Wall -Wpointer-arith -Wwrite-strings -Wconversion -Wno-unknown-pragmas -Wno-long-long   -DIPOPT_BUILD

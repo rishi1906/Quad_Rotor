@@ -3,8 +3,8 @@
 #include <cmath>
 #include <vector>
 #define PI acos(-1)
-typedef double decimal;
-typedef int integer;
+//typedef double decimal;
+//typedef int integer;
 //decimal DEG_to_RAD(decimal d) { return d * PI / 180.0; }
 //decimal RAD_to_DEG(decimal r) { return r * 180.0 / PI; }
 

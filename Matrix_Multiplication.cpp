@@ -65,7 +65,7 @@ decimal multiply_V_V
   decimal value = 0.0;
   for (integer i = 0 ; i < sz ; i++)
   {
-    value += A[i] * B[i];
+    value += (A[i] * B[i]);
   }
   return value;
 }

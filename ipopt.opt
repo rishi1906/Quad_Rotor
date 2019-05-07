@@ -1,6 +1,6 @@
-max_iter 10000
-tol 1e-4
-#acceptable_constr_viol_tol 0.001
+##max_iter 10000
+tol 1e-3
+acceptable_constr_viol_tol 0.001
 mu_strategy adaptive
 output_file ipopt.out
 hessian_approximation limited-memory

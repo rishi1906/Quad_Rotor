@@ -23,18 +23,20 @@ using namespace Ipopt;
 #define PI acos(-1)
 #define nxt_indx (((idx+1) * N) + (idx+1))
 #define rndm ((mx - mn) * ( (double)rand() / (double)RAND_MAX ) + mn)
+#define sz_n ((n_s + n_c) * (N + 1))
+#define sz_m (((N + 1) * n_s))
 // define size of stepsize for finite difference scheme to find gradient
 const Number step_size = 1e-8;
 const Number t_0 = 0.00;
-const Number t_f = 10.0;
+const Number t_f = 0.50;
 const Number mx = 999.999;
 const Number mn = -999.999;
 const Index n_s = 12 ; // define the length of X
 const Index n_c = 4 ; // define the length of U
 // const Number db_min = std::numeric_limits<double>::min();
 // const Number db_max = std::numeric_limits<double>::max();
-const Number db_min = -999.00;
-const Number db_max = 999.00;
+const Number db_min = -10000.00;
+const Number db_max = 10000.00;
 // *  X = [p q r phi theta psi z Vz y Vy x Vx]' // these are the pertubrations
 // *  U = [netT Mx My Mz]'  // these are the pertubrations
 // *  J = integral(t_0,t_f,(X'.Q.X+U'.R.U))
@@ -119,10 +121,10 @@ bool QUAD_ROTOR_NLP::get_nlp_info
 )
 {
   // size of problem
-  n = ((n_s + n_c) * (N + 1));
+  n = sz_n;
 
   // size of constraints
-  m = (((N + 1) * n_s) + (2 * n_s));
+  m = sz_m;
 
   // size of jacobian matrix
   nnz_jac_g = m * n;
@@ -151,8 +153,8 @@ bool QUAD_ROTOR_NLP::get_bounds_info
   // If desired, we could assert to make sure they are what we think they are.
 
   //assertain the values of m and n
-  assert(n == ((n_s + n_c) * (N + 1)));
-  assert(m == (((N + 1) * n_s) + (2 * n_s)));
+  assert(n == sz_n);
+  assert(m == sz_m);
 
   // Lower Bounds
   for (int i = 0 ; i <= N ; i++)
@@ -257,7 +259,7 @@ bool QUAD_ROTOR_NLP::get_starting_point
     const char* fn = file_name.c_str();
     myfile.open(fn);
     //std::cout << state_var[i] << "\n";
-    for (Index k = N; k >= N / 2; k--) {
+    for (Index k = N; k >= 0; k--) {
       //std::cout << x[i] << std::endl;
       myfile << time[k] << "," << x[INDX[state_var[i]]  + k] << "\n";
     }
@@ -399,7 +401,7 @@ bool QUAD_ROTOR_NLP::eval_f
   Number & obj_value //
 )
 {
-  assert(n == ((n_s + n_c) * (N + 1)));
+  assert(n == sz_n);
 
   // declare X a copy array of same size of x
   Number X[n];
@@ -460,7 +462,7 @@ bool QUAD_ROTOR_NLP::eval_grad_f
   Number * grad_f
 )
 {
-  assert(n == ((n_s + n_c) * (N + 1)));
+  assert(n == sz_n);
 
   // Approx Gradient using FDS
   // declare X a copy array of same size of x
@@ -491,8 +493,8 @@ bool QUAD_ROTOR_NLP::eval_g
   Number * g
 )
 {
-  assert(n == ((n_s + n_c) * (N + 1)));
-  assert(m == (((N + 1) * n_s) + (2 * n_s)));
+  assert(n == sz_n);
+  assert(m == sz_m);
 
   //Index sz_X = (n_s * N) + n_s;
   //Index sz_U = (n_c * N) + n_c;
@@ -616,36 +618,38 @@ bool QUAD_ROTOR_NLP::eval_g
   BU.clear();
   //additional constraints initial values
 
-  g[nth++] = x[INDX["p"    ] + N] - 1.0; /*intial value of "p"    */
-  g[nth++] = x[INDX["q"    ] + N] - 1.0; /*intial value of "q"    */
-  g[nth++] = x[INDX["r"    ] + N] - 1.0; /*intial value of "r"    */
-  g[nth++] = x[INDX["phi"  ] + N] - 1.0; /*intial value of "phi"  */
-  g[nth++] = x[INDX["theta"] + N] - 1.0; /*intial value of "theta"*/
-  g[nth++] = x[INDX["psi"  ] + N] - 1.0; /*intial value of "psi"  */
-  g[nth++] = x[INDX["z"    ] + N] - 1.0; /*intial value of "z"    */
-  g[nth++] = x[INDX["Vz"   ] + N] - 1.0; /*intial value of "Vz"   */
-  g[nth++] = x[INDX["y"    ] + N] - 1.0; /*intial value of "y"    */
-  g[nth++] = x[INDX["Vy"   ] + N] - 1.0; /*intial value of "Vy"   */
-  g[nth++] = x[INDX["x"    ] + N] - 1.0; /*intial value of "x"    */
-  g[nth++] = x[INDX["Vx"   ] + N] - 1.0; /*intial value of "Vx"   */
+  // g[nth++] = x[INDX["p"    ] + N] - 1.0; /*intial value of "p"    */
+  // g[nth++] = x[INDX["q"    ] + N] - 1.0; /*intial value of "q"    */
+  // g[nth++] = x[INDX["r"    ] + N] - 1.0; /*intial value of "r"    */
+  // g[nth++] = x[INDX["phi"  ] + N] - 1.0; /*intial value of "phi"  */
+  // g[nth++] = x[INDX["theta"] + N] - 1.0; /*intial value of "theta"*/
+  // g[nth++] = x[INDX["psi"  ] + N] - 1.0; /*intial value of "psi"  */
+  // g[nth++] = x[INDX["z"    ] + N] - 1.0; /*intial value of "z"    */
+  // g[nth++] = x[INDX["Vz"   ] + N] - 1.0; /*intial value of "Vz"   */
+  // g[nth++] = x[INDX["y"    ] + N] - 1.0; /*intial value of "y"    */
+  // g[nth++] = x[INDX["Vy"   ] + N] - 1.0; /*intial value of "Vy"   */
+  // g[nth++] = x[INDX["x"    ] + N] - 1.0; /*intial value of "x"    */
+  // g[nth++] = x[INDX["Vx"   ] + N] - 1.0; /*intial value of "Vx"   */
   // g[nth++] = x[INDX["netT" ]+N] - 1.0; /*intial value of "netT" */
   // g[nth++] = x[INDX["Mx"   ]+N] - 1.0; /*intial value of "Mx"   */
   // g[nth++] = x[INDX["My"   ]+N] - 1.0; /*intial value of "My"   */
   // g[nth++] = x[INDX["Mz"   ]+N] - 1.0; /*intial value of "Mz"   */
 
   // additional constraints final values
-  g[nth++] = x[INDX["p"    ]] - 0.00; /*final value of "p"    */
-  g[nth++] = x[INDX["q"    ]] - 0.00; /*final value of "q"    */
-  g[nth++] = x[INDX["r"    ]] - 0.00; /*final value of "r"    */
-  g[nth++] = x[INDX["phi"  ]] - 0.00; /*final value of "phi"  */
-  g[nth++] = x[INDX["theta"]] - 0.00; /*final value of "theta"*/
-  g[nth++] = x[INDX["psi"  ]] - 0.00; /*final value of "psi"  */
-  g[nth++] = x[INDX["z"    ]] - 0.00; /*final value of "z"    */
-  g[nth++] = x[INDX["Vz"   ]] - 0.00; /*final value of "Vz"   */
-  g[nth++] = x[INDX["y"    ]] - 0.00; /*final value of "y"    */
-  g[nth++] = x[INDX["Vy"   ]] - 0.00; /*final value of "Vy"   */
-  g[nth++] = x[INDX["x"    ]] - 0.00; /*final value of "x"    */
-  g[nth++] = x[INDX["Vx"   ]] - 0.00; /*final value of "Vx"   */
+
+  // g[nth++] = x[INDX["p"    ]] - 0.00; /*final value of "p"    */
+  // g[nth++] = x[INDX["q"    ]] - 0.00; /*final value of "q"    */
+  // g[nth++] = x[INDX["r"    ]] - 0.00; /*final value of "r"    */
+  // g[nth++] = x[INDX["phi"  ]] - 0.00; /*final value of "phi"  */
+  // g[nth++] = x[INDX["theta"]] - 0.00; /*final value of "theta"*/
+  // g[nth++] = x[INDX["psi"  ]] - 0.00; /*final value of "psi"  */
+  // g[nth++] = x[INDX["z"    ]] - 0.00; /*final value of "z"    */
+  // g[nth++] = x[INDX["Vz"   ]] - 0.00; /*final value of "Vz"   */
+  // g[nth++] = x[INDX["y"    ]] - 0.00; /*final value of "y"    */
+  // g[nth++] = x[INDX["Vy"   ]] - 0.00; /*final value of "Vy"   */
+  // g[nth++] = x[INDX["x"    ]] - 0.00; /*final value of "x"    */
+  // g[nth++] = x[INDX["Vx"   ]] - 0.00; /*final value of "Vx"   */
+
   // g[nth++] = x[INDX["netT" ]]; /*final value of "netT" */
   // g[nth++] = x[INDX["Mx"   ]]; /*final value of "Mx"   */
   // g[nth++] = x[INDX["My"   ]]; /*final value of "My"   */
@@ -669,8 +673,8 @@ bool QUAD_ROTOR_NLP::eval_jac_g
   Number * values   //
 )
 {
-  assert(n == ((n_s + n_c) * (N + 1)));
-  assert(m == (((N + 1) * n_s) + (2 * n_s)));
+  assert(n == sz_n);
+  assert(m == sz_m);
 
   if (values == NULL) {
     // return the structure of the Jacobian
@@ -787,7 +791,7 @@ void QUAD_ROTOR_NLP::finalize_solution
     const char* fn = file_name.c_str();
     myfile.open(fn);
     //std::cout << state_var[i] << "\n";
-    for (Index k = N; k >= N / 2; k--) {
+    for (Index k = N; k >= 0; k--) {
       //std::cout << x[i] << std::endl;
       myfile << time[k] << "," << x[INDX[state_var[i]]  + k] << "\n";
     }
@@ -811,25 +815,43 @@ void QUAD_ROTOR_NLP::finalize_solution
   std::cout << std::endl << std::endl << "Objective value" << std::endl;
   std::cout << "f(x*) = " << obj_value << std::endl;
 
-  Number val = 0.0;
-  /*
-  for (Index i = 0 ; i < n ; i++) {
-    val += (x[i] * x[i]);
-  }*/
-  Number X[n];
-  // make a copy of x in X
-  for (Index k = 0; k < n; k++)
+
+  std::ofstream mf1;
+  mf1.open("./Outputs/final_X.txt");
+  for (Index i = 0 ; i < n_s ; i++)
   {
-    X[k] = x[k];
+    //std::cout << state_var[i] << "\n";
+    for (Index k = N; k >= 0; k--) {
+      //std::cout << x[i] << std::endl;
+      mf1 << x[INDX[state_var[i]]  + k] << " ";
+    } mf1 << endl;
   }
-  val = Obj_func(X, N);
-  std::cout << "Cost: " << val;
-  /*
+  mf1.close();
+
+  std::ofstream mf2;
+  mf2.open("./Outputs/final_U.txt");
+  mf2 << "[ ";
+  for (Index i = n_s ; i < n_s + n_c ; i++)
+  {
+    //std::cout << state_var[i] << "\n";
+    for (Index k = N; k >= 0; k--)
+    {
+      //std::cout << x[i] << std::endl;
+      mf2 << x[INDX[state_var[i]]  + k] << " ";
+    }
+    if (i < n_s + n_c - 1)
+    {
+      mf2 << " ;" << endl;
+    }
+  }
+  mf2 << "]";
+  mf2.close();
+
   std::cout << std::cout << std::endl
             << "Final value of the constraints:" << std::endl;
   for (Index i = 0; i < m; i++) {
     std::cout << "g(" << i << ") = " << g[i] << std::endl;
-  }*/
+  }
   time.clear();
   // Analytical Solution
   /*std::cout << std::endl

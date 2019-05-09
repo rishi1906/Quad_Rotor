@@ -24,7 +24,7 @@ using namespace std;
  *             Pseudospectral Method
  *            Quadrotor Modelling and Dynamics
  *
- *  X = [p q r phi theta psi x Vz y Vy x Vx]'
+ *  X = [p q r phi theta psi z Vz y Vy x Vx]'
  *  U = [netT Mx My Mz]'
  *  J = 1/2 integral(t_0,t_f,(X'.Q.X+U'.R.U))
  *

@@ -36,14 +36,14 @@ for stt in state_var:
 	#print(x)
 	#print(y)
 	plt.figure(dpi=150)
-	plt.plot(x,y,label = "Output")
+	plt.plot(x,y,label = "IPOPT")
 	# plt.hold(True);
-	plt.plot(a,b,label = "Input")
+	plt.plot(a,b,label = "LQR")
 	plt.scatter(a, b,label= "CGL Nodes", color= "green", marker= "*", s=10)
 	plt.scatter(x, y,label= "CGL Nodes", color= "red", marker= "*", s=10)  
 	plt.xlabel('Time')
 	plt.ylabel('Amplitude')
-	plt.title("Pertubrations in "+stt)
+	plt.title(stt)
 	plt.legend()
 	
 	plt.savefig('Pertubrations in '+stt+'.png')

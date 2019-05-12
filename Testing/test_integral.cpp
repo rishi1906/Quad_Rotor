@@ -10,7 +10,7 @@
 #include "Differentiation_Matrix.cpp"
 #include "Integral_Weights.cpp"
 #define PI acos(-1)
-#define f(val) cos(val)
+#define f(val) sin(val)
 using namespace std;
 
 int main()
@@ -24,7 +24,7 @@ int main()
 	std::vector<double > X(n + 1), T(n + 1), t(n + 1), w(n + 1);
 
 	T = define_time_stamps<double, int>(n + 1);
-	decimal t_0 = 0, t_f = 3;
+	decimal t_0 = 0, t_f = PI/2;
 
 	for (integer i = 0; i <= n; i++)
 	{
@@ -35,7 +35,7 @@ int main()
 	std::ofstream myfile;
 	myfile.open("test_output_1.txt");
 	for (int i = 0 ; i <= n ; i++) {
-		X[i] = f(t[i]);
+		//X[i] = f(t[i]);
 		//X[i] = t[i] * t[i] - 1;
 		//X[i] = exp(t[i]);
 		//X[i] = 1;

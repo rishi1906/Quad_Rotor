@@ -19,9 +19,9 @@ for stt in state_var:
 	plt.scatter(x, y,label= "CGL Nodes", color= "red", marker= "*", s=10) 
 	plt.xlabel('Time')
 	plt.ylabel('Amplitude')
-	plt.title('Quad Rotor Dyamics')
+	plt.title('IPOPT States')
 	#plt.legend()
-plt.savefig('Pertubrations.png')
+plt.savefig('IPOPT output states.png')
 plt.show()
 
 

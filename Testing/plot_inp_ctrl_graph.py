@@ -19,7 +19,7 @@ for stt in state_var:
 	plt.scatter(x, y, color= "red", marker= ".", s=10) 
 	plt.xlabel('Time')
 	plt.ylabel('Amplitude')
-	plt.title('LQR input controls')
+	plt.title('LQR Controls')
 	# plt.legend()
 plt.savefig('LQR_input_controls.png')
 plt.show()

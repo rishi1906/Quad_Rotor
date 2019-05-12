@@ -24,19 +24,19 @@ using namespace Ipopt;
 #define nxt_indx (((idx+1) * N) + (idx+1))
 #define rndm ((mx - mn) * ( (double)rand() / (double)RAND_MAX ) + mn)
 #define sz_n ((n_s + n_c) * (N + 1))
-#define sz_m (((N + 1) * n_s))
+#define sz_m (((N + 1) * n_s) + n_s)
 // define size of stepsize for finite difference scheme to find gradient
 const Number step_size = 1e-8;
 const Number t_0 = 0.00;
-const Number t_f = 0.50;
+const Number t_f = 1.00;
 const Number mx = 999.999;
 const Number mn = -999.999;
 const Index n_s = 12 ; // define the length of X
 const Index n_c = 4 ; // define the length of U
 // const Number db_min = std::numeric_limits<double>::min();
 // const Number db_max = std::numeric_limits<double>::max();
-const Number db_min = -10000.00;
-const Number db_max = 10000.00;
+const Number db_min = -99999.00;
+const Number db_max = 99999.00;
 // *  X = [p q r phi theta psi z Vz y Vy x Vx]' // these are the pertubrations
 // *  U = [netT Mx My Mz]'  // these are the pertubrations
 // *  J = integral(t_0,t_f,(X'.Q.X+U'.R.U))
@@ -176,12 +176,12 @@ bool QUAD_ROTOR_NLP::get_bounds_info
     x_l[INDX["My"    ]  + i] = db_min;
     x_l[INDX["Mz"    ]  + i] = db_min;
   }
-
-  /*for (int i = 0 ; i < n ; i++)
+  /*
+  for (int i = 0 ; i < n ; i++)
   {
     x_l[i] = db_min;
-  }*/
-
+  }
+  */
   // Upper Bounds
 
   for (int i = 0 ; i <= N ; i++)
@@ -203,11 +203,13 @@ bool QUAD_ROTOR_NLP::get_bounds_info
     x_u[INDX["My"    ]  + i] = db_max;
     x_u[INDX["Mz"    ]  + i] = db_max;
   }
+
   /*
   for (int i = 0 ; i < n ; i++)
   {
-    x_u[i] = db_max;
-  }*/
+  x_u[i] = db_max;
+  }
+  */
   // set bounds on constraints for inequality constraints
   return true;
 }
@@ -250,7 +252,20 @@ bool QUAD_ROTOR_NLP::get_starting_point
     //myfile << x[i] << " ";
   }
   f1.close();
+  /*
+  string guess_stt = "z";
 
+  std::ifstream rd_z;
+  string file_name = "./Inputs/guess_" + guess_stt + ".txt";
+  const char* fn = file_name.c_str();
+  rd_z.open(fn);
+  for (Index k = N; k >= 0; k--) {
+    //std::cout << x[i] << std::endl;
+    rd_z >> x[INDX["z"]  + k];
+  }
+  rd_z.close();
+  */
+  //Index cnt_dwn=1;
   string state_var[n_s + n_c] = {"p", "q" , "r", "phi", "theta", "psi", "z", "Vz", "y", "Vy", "x", "Vx", "netT", "Mx", "My", "Mz"};
   for (Index i = 0 ; i < n_s + n_c ; i++)
   {
@@ -373,8 +388,6 @@ Number QUAD_ROTOR_NLP::Obj_func
     XTQX = multiply_V_V<Number, Index>(X, QX, n_s);
     UTRU = multiply_V_V<Number, Index>(U, RU, n_c);
 
-
-    //obj_value += (XTQX + UTRU) / 2.0;
     obj_value += ((XTQX + UTRU) * w[k]);
     X.clear();
     U.clear();
@@ -386,7 +399,7 @@ Number QUAD_ROTOR_NLP::Obj_func
     R.clear();
 
   }
-  obj_value /= ((t_f - t_0) / 2.0);
+  obj_value *= ((t_f - t_0) / 2.0);
   w.clear();
   return obj_value;
 }
@@ -618,18 +631,18 @@ bool QUAD_ROTOR_NLP::eval_g
   BU.clear();
   //additional constraints initial values
 
-  // g[nth++] = x[INDX["p"    ] + N] - 1.0; /*intial value of "p"    */
-  // g[nth++] = x[INDX["q"    ] + N] - 1.0; /*intial value of "q"    */
-  // g[nth++] = x[INDX["r"    ] + N] - 1.0; /*intial value of "r"    */
-  // g[nth++] = x[INDX["phi"  ] + N] - 1.0; /*intial value of "phi"  */
-  // g[nth++] = x[INDX["theta"] + N] - 1.0; /*intial value of "theta"*/
-  // g[nth++] = x[INDX["psi"  ] + N] - 1.0; /*intial value of "psi"  */
-  // g[nth++] = x[INDX["z"    ] + N] - 1.0; /*intial value of "z"    */
-  // g[nth++] = x[INDX["Vz"   ] + N] - 1.0; /*intial value of "Vz"   */
-  // g[nth++] = x[INDX["y"    ] + N] - 1.0; /*intial value of "y"    */
-  // g[nth++] = x[INDX["Vy"   ] + N] - 1.0; /*intial value of "Vy"   */
-  // g[nth++] = x[INDX["x"    ] + N] - 1.0; /*intial value of "x"    */
-  // g[nth++] = x[INDX["Vx"   ] + N] - 1.0; /*intial value of "Vx"   */
+  g[nth++] = x[INDX["p"    ] + N] - 0.00; /*intial value of "p"    */
+  g[nth++] = x[INDX["q"    ] + N] - 0.00; /*intial value of "q"    */
+  g[nth++] = x[INDX["r"    ] + N] - 0.00; /*intial value of "r"    */
+  g[nth++] = x[INDX["phi"  ] + N] - 0.00; /*intial value of "phi"  */
+  g[nth++] = x[INDX["theta"] + N] - 0.00; /*intial value of "theta"*/
+  g[nth++] = x[INDX["psi"  ] + N] - 0.00; /*intial value of "psi"  */
+  g[nth++] = x[INDX["z"    ] + N] - 1.00; /*intial value of "z"    */
+  g[nth++] = x[INDX["Vz"   ] + N] - 0.00; /*intial value of "Vz"   */
+  g[nth++] = x[INDX["y"    ] + N] - 0.00; /*intial value of "y"    */
+  g[nth++] = x[INDX["Vy"   ] + N] - 0.00; /*intial value of "Vy"   */
+  g[nth++] = x[INDX["x"    ] + N] - 0.00; /*intial value of "x"    */
+  g[nth++] = x[INDX["Vx"   ] + N] - 0.00; /*intial value of "Vx"   */
   // g[nth++] = x[INDX["netT" ]+N] - 1.0; /*intial value of "netT" */
   // g[nth++] = x[INDX["Mx"   ]+N] - 1.0; /*intial value of "Mx"   */
   // g[nth++] = x[INDX["My"   ]+N] - 1.0; /*intial value of "My"   */
@@ -816,17 +829,17 @@ void QUAD_ROTOR_NLP::finalize_solution
   std::cout << "f(x*) = " << obj_value << std::endl;
 
 
-  std::ofstream mf1;
-  mf1.open("./Outputs/final_X.txt");
-  for (Index i = 0 ; i < n_s ; i++)
-  {
-    //std::cout << state_var[i] << "\n";
-    for (Index k = N; k >= 0; k--) {
-      //std::cout << x[i] << std::endl;
-      mf1 << x[INDX[state_var[i]]  + k] << " ";
-    } mf1 << endl;
-  }
-  mf1.close();
+  // std::ofstream mf1;
+  // mf1.open("./Outputs/final_X.txt");
+  // for (Index i = 0 ; i < n_s ; i++)
+  // {
+  //   //std::cout << state_var[i] << "\n";
+  //   for (Index k = N; k >= 0; k--) {
+  //     //std::cout << x[i] << std::endl;
+  //     mf1 << x[INDX[state_var[i]]  + k] << " ";
+  //   } mf1 << endl;
+  // }
+  // mf1.close();
 
   std::ofstream mf2;
   mf2.open("./Outputs/final_U.txt");
@@ -847,11 +860,11 @@ void QUAD_ROTOR_NLP::finalize_solution
   mf2 << "]";
   mf2.close();
 
-  std::cout << std::cout << std::endl
-            << "Final value of the constraints:" << std::endl;
-  for (Index i = 0; i < m; i++) {
-    std::cout << "g(" << i << ") = " << g[i] << std::endl;
-  }
+  // std::cout << std::cout << std::endl
+  //           << "Final value of the constraints:" << std::endl;
+  // for (Index i = 0; i < m; i++) {
+  //   std::cout << "g(" << i << ") = " << g[i] << std::endl;
+  // }
   time.clear();
   // Analytical Solution
   /*std::cout << std::endl

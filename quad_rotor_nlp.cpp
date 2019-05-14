@@ -28,7 +28,7 @@ using namespace Ipopt;
 // define size of stepsize for finite difference scheme to find gradient
 const Number step_size = 1e-8;
 const Number t_0 = 0.00;
-const Number t_f = 1.00;
+const Number t_f = 8.00;
 const Number mx = 999.999;
 const Number mn = -999.999;
 const Index n_s = 12 ; // define the length of X
@@ -249,10 +249,12 @@ bool QUAD_ROTOR_NLP::get_starting_point
   for (integer i = 0 ; i < n ; i++)
   {
     f1 >> x[i];
+    //x[i] += 0.5;
     //myfile << x[i] << " ";
   }
   f1.close();
-  /*
+  /* take input of guess_stt
+   
   string guess_stt = "z";
 
   std::ifstream rd_z;

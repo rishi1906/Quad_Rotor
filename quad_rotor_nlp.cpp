@@ -4,7 +4,7 @@
 //
 // Authors:  Carl Laird, Andreas Waechter     IBM    2005-08-16
 // Authors: Rishabh Vashistha rishabhsharma1906@gmail.com
-// 
+//
 /**
  *
  *  Direct Trajectory Optimization by a Chebyshev
@@ -41,15 +41,39 @@ using namespace Ipopt;
 // define size of stepsize for finite difference scheme to find gradient
 const Number step_size = 1e-8;
 const Number t_0 = 0.00;
-const Number t_f = 2.00;
+const Number t_f = 8.00;
 const Number mx = 999.999;
 const Number mn = -999.999;
-const Index n_s = 12 ; // define the length of X
-const Index n_c = 4 ; // define the length of U
+const Index n_s = 12 ;  // define the length of X
+const Index n_c = 4 ;   // define the length of U
+
+// constants of the dynamic system
+//****************************************************************
+const Number mass = 1.104; // mass
+const Number grav = 9.81;  // gravity
+// const Number density = 1.225;
+const Number Ix  = 0.008562874765838073;
+const Number Iy  = 0.008788914621963906;
+const Number Iz  = 0.015570395039175332;
+// const Number momentArm   = 0.225; %half of quadcopter diagonal
+const Number tow_x = 0.0;
+const Number tow_y = 0.0;
+const Number tow_z = 0.0;
+const Number tow_wx = 0.0;
+const Number tow_wy = 0.0;
+const Number tow_wz = 0.0;
+const Number f_wx = 0.0;
+const Number f_wy = 0.0;
+const Number f_wz = 0.0;
+const Number f_t = mass * grav;
+//*****************************************************************
+
 // const Number db_min = std::numeric_limits<double>::min();
 // const Number db_max = std::numeric_limits<double>::max();
+
 const Number db_min = -99999.00;
 const Number db_max = 99999.00;
+
 // *  X = [p q r phi theta psi z Vz y Vy x Vx]' // these are the pertubrations
 // *  U = [netT Mx My Mz]'  // these are the pertubrations
 // *  J = integral(t_0,t_f,(X'.Q.X+U'.R.U))
@@ -267,7 +291,7 @@ bool QUAD_ROTOR_NLP::get_starting_point
   }
   f1.close();
   /* take input of guess_stt
-   
+
   string guess_stt = "z";
 
   std::ifstream rd_z;
@@ -524,134 +548,248 @@ bool QUAD_ROTOR_NLP::eval_g
   assert(n == sz_n);
   assert(m == sz_m);
 
-  //Index sz_X = (n_s * N) + n_s;
-  //Index sz_U = (n_c * N) + n_c;
-  std::vector<std::vector<Number > > A(n_s , std::vector <Number > (n_s)), B(n_s , std::vector <Number > (n_c));
+  std::vector<Number > C(N + 1), X(n + 1), DX(N + 1);
 
-  //Number tf = 1.25;
-
-  std::vector<Number > C(N + 1);
-
-  std::vector<std::vector<Number > > D(N + 1 , std::vector <Number > (N + 1)), DX(N + 1 , std::vector <Number > (n_s));
-  std::vector<std::vector<Number > > X, AX, BU;
+  std::vector<std::vector<Number > > D(N + 1 , std::vector <Number > (N + 1));
 
   C = compute_c<Number, Index>(N + 1);
   D = formulate_differentiation_matrix<Number, Index>(C, T, N + 1);
 
-  // form X
+  // string state_var[n_s + n_c] = {"p", "q" , "r", "phi", "theta", "psi", "z", "Vz", "y", "Vy", "x", "Vx", "netT", "Mx", "My", "Mz"};
+  // Index len =  n_s + n_c;
+
+  Index nth = 0;
+
+  /*
+  constraint for p
+  p_dot = (((Iy-Iz)*r*q)/Ix) + ((tow_x + tow_wx)/Ix);
+  */
   for (Index k = N ; k >= 0 ; k--)
   {
-    std::vector<Number > k_X(n_s);
-    Index i = 0;
-    k_X[  i] = x[INDX["p"    ]  + k];
-    k_X[++i] = x[INDX["q"    ]  + k];
-    k_X[++i] = x[INDX["r"    ]  + k];
-    k_X[++i] = x[INDX["phi"  ]  + k];
-    k_X[++i] = x[INDX["theta"]  + k];
-    k_X[++i] = x[INDX["psi"  ]  + k];
-    k_X[++i] = x[INDX["z"    ]  + k];
-    k_X[++i] = x[INDX["Vz"   ]  + k];
-    k_X[++i] = x[INDX["y"    ]  + k];
-    k_X[++i] = x[INDX["Vy"   ]  + k];
-    k_X[++i] = x[INDX["x"    ]  + k];
-    k_X[++i] = x[INDX["Vx"   ]  + k];
-    // push kthX to X
-    X.push_back(k_X);
-    k_X.clear();
+    X[k] = x[INDX["p"] + k];
   }
-
-  // matrix multiply D and X
-  DX = multiply_M_M<Number, Index>(D, X, (N + 1), n_s);
-
-  // form AX
-  // read A
-  std::ifstream f1;
-  f1.open("./Inputs/A.txt");
-  for (Index i = 0 ; i < n_s ; i++)
-  {
-    for (Index j = 0 ; j < n_s ; j++)
-    {
-      f1 >> A[i][j];
-    }
-  }
-  f1.close();
-
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = N ; k >= 0 ; k--)
   {
-    std::vector<Number > k_X(n_s), k_AX(n_s);
-    Index i = 0;
-    k_X[  i] = x[INDX["p"    ]  + k];
-    k_X[++i] = x[INDX["q"    ]  + k];
-    k_X[++i] = x[INDX["r"    ]  + k];
-    k_X[++i] = x[INDX["phi"  ]  + k];
-    k_X[++i] = x[INDX["theta"]  + k];
-    k_X[++i] = x[INDX["psi"  ]  + k];
-    k_X[++i] = x[INDX["z"    ]  + k];
-    k_X[++i] = x[INDX["Vz"   ]  + k];
-    k_X[++i] = x[INDX["y"    ]  + k];
-    k_X[++i] = x[INDX["Vy"   ]  + k];
-    k_X[++i] = x[INDX["x"    ]  + k];
-    k_X[++i] = x[INDX["Vx"   ]  + k];
-    k_AX = multiply_M_V<Number, Index>(A, k_X, n_s);
-    AX.push_back(k_AX);
-    k_X.clear();
-    k_AX.clear();
+    g[nth] = DX[k]
+             - (((Iy - Iz) * x[INDX["r"] + k] * x[INDX["q"] + k]) / Ix)
+             - ((x[INDX["Mx"] + k]) / Ix);
+    // - ((tow_x + tow_wx) / Ix);
+    nth += 1;
   }
 
-  // form BX
-  // read B
-  std::ifstream f2;
-  f2.open("./Inputs/B.txt");
-  for (Index i = 0 ; i < n_s ; i++)
-  {
-    for (Index j = 0 ; j < n_c ; j++)
-    {
-      f2 >> B[i][j];
-    }
-  }
-  f2.close();
+  /*
+  constraint for q
+  q_dot = (((Iz-Ix)*p*r)/Iy) + ((tow_y + tow_wy)/Iy);
+  */
   for (Index k = N ; k >= 0 ; k--)
   {
-    std::vector<Number > k_U(n_c), k_BU(n_c);
-
-    Index i = 0;
-    k_U[  i] = x[INDX["netT" ]  + k];
-    k_U[++i] = x[INDX["Mx"   ]  + k];
-    k_U[++i] = x[INDX["My"   ]  + k];
-    k_U[++i] = x[INDX["Mz"   ]  + k];
-    k_BU = multiply_M_V<Number, Index>(B, k_U, n_s, n_c);
-    BU.push_back(k_BU);
-    k_U.clear();
-    k_BU.clear();
+    X[k] = x[INDX["q"] + k];
   }
-
-  // define constraints
-  Index nth = 0 ;
-  Number c1 = 2.0 / (t_f - t_0);
-  for (Index i = 0; i <= N ; i++)
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
   {
-    for (Index j = 0; j < n_s ; j++)
-    {
-      g[nth] = (c1 * DX[i][j]) - AX[i][j] - BU[i][j];
-      nth += 1;
-    }
+    g[nth] = DX[k]
+             - (((Iz - Ix) * x[INDX["p"] + k] * x[INDX["r"] + k]) / Iy)
+             - ((x[INDX["My"] + k]) / Iy);
+    // - ((tow_y + tow_wy) / Iy);
+    nth += 1;
   }
-  A.clear();
-  B.clear();
+
+
+  /*
+  constraint for r
+  r_dot = (((Ix-Iy)*p*q)/Iz) + ((tow_z + tow_wz)/Iz);
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["r"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - (((Ix - Iy) * x[INDX["p"] + k] * x[INDX["q"] + k]) / Iz)
+             - ((x[INDX["Mz"] + k]) / Iz);
+    // - ((tow_z + tow_wz) / Iz);
+    nth += 1;
+  }
+
+  /*
+  constraint for phi
+  phi_dot = p + (r*cos(phi)*tan(theta)) + q*(sin(phi))*(tan(theta));
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["phi"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - x[INDX["p"] + k]
+             - (x[INDX["r"] + k] * cos(x[INDX["phi"] + k]) * tan(x[INDX["theta"] + k]))
+             - (x[INDX["q"] + k] * (sin(x[INDX["phi"] + k])) * (tan(x[INDX["theta"] + k])));
+    nth += 1;
+  }
+
+  /*
+  constraint for theta
+  theta_dot = (q*cos(phi)) - (r*sin(phi))
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["theta"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - (x[INDX["q"] + k] * cos(x[INDX["phi"] + k]))
+             + (x[INDX["r"] + k] * sin(x[INDX["phi"] + k]));
+    nth += 1;
+  }
+
+  /*
+  constraint for psi
+  psi_dot = ((r*cos(phi))/cos(theta)) + ((q*sin(phi))/cos(theta))
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["psi"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - ((x[INDX["r"] + k] * cos(x[INDX["phi"] + k])) / cos(x[INDX["theta"] + k]))
+             - ((x[INDX["q"] + k] * sin(x[INDX["phi"] + k])) / cos(x[INDX["theta"] + k]));
+    nth += 1;
+  }
+
+  /*
+  constraint for x
+  x_dot = (w*((sin(phi)*sin(psi))+(cos(phi)*cos(psi)*sin(theta)))) - (v*((cos(phi)*sin(psi))-(cos(psi)*sin(phi)*sin(theta)))) + (u*cos(psi)*cos(theta))
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["x"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - (x[INDX["Vz"] + k] * ((sin(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k])) + (cos(x[INDX["phi"] + k]) * cos(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
+             + (x[INDX["Vy"] + k] * ((cos(x[INDX["psi"] + k]) * sin(x[INDX["psi"] + k])) - (cos(x[INDX["psi"] + k]) * sin(x[INDX["phi"] + k]) * sin(x[INDX["theta"] + k]))))
+             - (x[INDX["Vx"] + k] * cos(x[INDX["psi"] + k]) * cos(x[INDX["theta"] + k]));
+    nth += 1;
+  }
+  /*
+  constraint for y
+  y_dot = (v*((cos(phi)*cos(psi))+(sin(phi)*sin(psi)*sin(theta)))) - (w*((cos(psi)*sin(phi))-(cos(phi)*sin(psi)*sin(theta)))) + (u*cos(theta)*sin(psi))
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["y"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - (x[INDX["Vy"] + k] * ((cos(x[INDX["phi"] + k]) * cos(x[INDX["psi"] + k])) + (sin(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
+             + (x[INDX["Vz"] + k] * ((cos(x[INDX["psi"] + k]) * sin(x[INDX["phi"] + k])) - (cos(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
+             - (x[INDX["Vx"] + k] * cos(x[INDX["theta"] + k]) * sin(x[INDX["psi"] + k]));
+    nth += 1;
+  }
+  /*
+  constraint for z
+  z_dot = (w*cos(phi)*cos(theta)) - (u*sin(theta)) + (v*cos(theta)*sin(phi))
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["z"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - (x[INDX["Vz"] + k] * cos(x[INDX["phi"] + k]) * cos(x[INDX["theta"] + k]))
+             + (x[INDX["Vx"] + k] * sin(x[INDX["theta"] + k]))
+             - (x[INDX["Vy"] + k] * cos(x[INDX["theta"] + k]) * sin(x[INDX["phi"] + k]));
+    nth += 1;
+  }
+
+  /*
+  constraint for Vx(u)
+  Vx(u)_dot = (r*v) - (q*w) - (g*sin(theta)) + (f_wx/m)
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["Vx"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - (x[INDX["r"] + k] * x[INDX["Vy"] + k])
+             + (x[INDX["q"] + k] * x[INDX["Vz" ] + k])
+             + (grav * sin(x[INDX["theta"] + k]))
+             - (f_wx / mass);
+    nth += 1;
+  }
+
+  /*
+  constraint for Vy(v)
+  Vy(v)_dot = (p*w) - (r*u) + (g*sin(phi)*cos(theta)) + (f_wy/m)
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["Vy"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - (x[INDX["p"] + k] * x[INDX["Vz"] + k])
+             + (x[INDX["r"] + k] * x[INDX["Vx"] + k])
+             - (grav * sin(x[INDX["phi"] + k]) * cos(x[INDX["theta"] + k]))
+             - (f_wy / mass);
+    nth += 1;
+  }
+
+  /*
+  constraint for Vz(w)
+  Vz(w)_dot = (q*u) - (p*v) + (g*cos(theta)*cos(phi)) + ((f_wz-f_t)/m)
+  */
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    X[k] = x[INDX["Vz"] + k];
+  }
+  DX = multiply_M_V<Number, Index>(D, X, (N + 1));
+  for (Index k = N ; k >= 0 ; k--)
+  {
+    g[nth] = DX[k]
+             - (x[INDX["q"] + k] * x[INDX["Vx"] + k])
+             + (x[INDX["p"] + k] * x[INDX["Vy"] + k])
+             - (grav * cos(x[INDX["theta"] + k]) * cos(x[INDX["phi"] + k]))
+             - (f_wz - (x[INDX["netT"] + k] + f_t)) / mass;
+    // - ((f_wz - f_t) / mass);
+    nth += 1;
+  }
+
   C.clear();
   D.clear();
   DX.clear();
   X.clear();
-  AX.clear();
-  BU.clear();
+
   //additional constraints initial values
 
   g[nth++] = x[INDX["p"    ] + N] - 0.00; /*intial value of "p"    */
   g[nth++] = x[INDX["q"    ] + N] - 0.00; /*intial value of "q"    */
   g[nth++] = x[INDX["r"    ] + N] - 0.00; /*intial value of "r"    */
-  g[nth++] = x[INDX["phi"  ] + N] - 0.10; /*intial value of "phi"  */
-  g[nth++] = x[INDX["theta"] + N] - 0.10; /*intial value of "theta"*/
-  g[nth++] = x[INDX["psi"  ] + N] - 0.10; /*intial value of "psi"  */
+  g[nth++] = x[INDX["phi"  ] + N] - 0.00; /*intial value of "phi"  */
+  g[nth++] = x[INDX["theta"] + N] - 0.00; /*intial value of "theta"*/
+  g[nth++] = x[INDX["psi"  ] + N] - 0.00; /*intial value of "psi"  */
   g[nth++] = x[INDX["z"    ] + N] - 1.00; /*intial value of "z"    */
   g[nth++] = x[INDX["Vz"   ] + N] - 0.00; /*intial value of "Vz"   */
   g[nth++] = x[INDX["y"    ] + N] - 0.00; /*intial value of "y"    */

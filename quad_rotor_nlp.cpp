@@ -41,7 +41,7 @@ using namespace Ipopt;
 // define size of stepsize for finite difference scheme to find gradient
 const Number step_size = 1e-8;
 const Number t_0 = 0.00;
-const Number t_f = 8.00;
+const Number t_f = 12.00;
 const Number mx = 999.999;
 const Number mn = -999.999;
 const Index n_s = 12 ;  // define the length of X
@@ -559,19 +559,19 @@ bool QUAD_ROTOR_NLP::eval_g
   // Index len =  n_s + n_c;
 
   Index nth = 0;
-
+  Number c1 = 2.0 / (t_f - t_0);
   /*
   constraint for p
   p_dot = (((Iy-Iz)*r*q)/Ix) + ((tow_x + tow_wx)/Ix);
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["p"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (((Iy - Iz) * x[INDX["r"] + k] * x[INDX["q"] + k]) / Ix)
              - ((x[INDX["Mx"] + k]) / Ix);
     // - ((tow_x + tow_wx) / Ix);
@@ -582,14 +582,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for q
   q_dot = (((Iz-Ix)*p*r)/Iy) + ((tow_y + tow_wy)/Iy);
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["q"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (((Iz - Ix) * x[INDX["p"] + k] * x[INDX["r"] + k]) / Iy)
              - ((x[INDX["My"] + k]) / Iy);
     // - ((tow_y + tow_wy) / Iy);
@@ -601,14 +601,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for r
   r_dot = (((Ix-Iy)*p*q)/Iz) + ((tow_z + tow_wz)/Iz);
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["r"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (((Ix - Iy) * x[INDX["p"] + k] * x[INDX["q"] + k]) / Iz)
              - ((x[INDX["Mz"] + k]) / Iz);
     // - ((tow_z + tow_wz) / Iz);
@@ -619,14 +619,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for phi
   phi_dot = p + (r*cos(phi)*tan(theta)) + q*(sin(phi))*(tan(theta));
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["phi"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - x[INDX["p"] + k]
              - (x[INDX["r"] + k] * cos(x[INDX["phi"] + k]) * tan(x[INDX["theta"] + k]))
              - (x[INDX["q"] + k] * (sin(x[INDX["phi"] + k])) * (tan(x[INDX["theta"] + k])));
@@ -637,14 +637,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for theta
   theta_dot = (q*cos(phi)) - (r*sin(phi))
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["theta"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (x[INDX["q"] + k] * cos(x[INDX["phi"] + k]))
              + (x[INDX["r"] + k] * sin(x[INDX["phi"] + k]));
     nth += 1;
@@ -654,14 +654,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for psi
   psi_dot = ((r*cos(phi))/cos(theta)) + ((q*sin(phi))/cos(theta))
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["psi"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - ((x[INDX["r"] + k] * cos(x[INDX["phi"] + k])) / cos(x[INDX["theta"] + k]))
              - ((x[INDX["q"] + k] * sin(x[INDX["phi"] + k])) / cos(x[INDX["theta"] + k]));
     nth += 1;
@@ -671,14 +671,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for x
   x_dot = (w*((sin(phi)*sin(psi))+(cos(phi)*cos(psi)*sin(theta)))) - (v*((cos(phi)*sin(psi))-(cos(psi)*sin(phi)*sin(theta)))) + (u*cos(psi)*cos(theta))
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["x"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (x[INDX["Vz"] + k] * ((sin(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k])) + (cos(x[INDX["phi"] + k]) * cos(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
              + (x[INDX["Vy"] + k] * ((cos(x[INDX["psi"] + k]) * sin(x[INDX["psi"] + k])) - (cos(x[INDX["psi"] + k]) * sin(x[INDX["phi"] + k]) * sin(x[INDX["theta"] + k]))))
              - (x[INDX["Vx"] + k] * cos(x[INDX["psi"] + k]) * cos(x[INDX["theta"] + k]));
@@ -688,14 +688,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for y
   y_dot = (v*((cos(phi)*cos(psi))+(sin(phi)*sin(psi)*sin(theta)))) - (w*((cos(psi)*sin(phi))-(cos(phi)*sin(psi)*sin(theta)))) + (u*cos(theta)*sin(psi))
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["y"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (x[INDX["Vy"] + k] * ((cos(x[INDX["phi"] + k]) * cos(x[INDX["psi"] + k])) + (sin(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
              + (x[INDX["Vz"] + k] * ((cos(x[INDX["psi"] + k]) * sin(x[INDX["phi"] + k])) - (cos(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
              - (x[INDX["Vx"] + k] * cos(x[INDX["theta"] + k]) * sin(x[INDX["psi"] + k]));
@@ -705,14 +705,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for z
   z_dot = (w*cos(phi)*cos(theta)) - (u*sin(theta)) + (v*cos(theta)*sin(phi))
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["z"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (x[INDX["Vz"] + k] * cos(x[INDX["phi"] + k]) * cos(x[INDX["theta"] + k]))
              + (x[INDX["Vx"] + k] * sin(x[INDX["theta"] + k]))
              - (x[INDX["Vy"] + k] * cos(x[INDX["theta"] + k]) * sin(x[INDX["phi"] + k]));
@@ -723,14 +723,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for Vx(u)
   Vx(u)_dot = (r*v) - (q*w) - (g*sin(theta)) + (f_wx/m)
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["Vx"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (x[INDX["r"] + k] * x[INDX["Vy"] + k])
              + (x[INDX["q"] + k] * x[INDX["Vz" ] + k])
              + (grav * sin(x[INDX["theta"] + k]))
@@ -742,14 +742,14 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for Vy(v)
   Vy(v)_dot = (p*w) - (r*u) + (g*sin(phi)*cos(theta)) + (f_wy/m)
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["Vy"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (x[INDX["p"] + k] * x[INDX["Vz"] + k])
              + (x[INDX["r"] + k] * x[INDX["Vx"] + k])
              - (grav * sin(x[INDX["phi"] + k]) * cos(x[INDX["theta"] + k]))
@@ -761,18 +761,18 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for Vz(w)
   Vz(w)_dot = (q*u) - (p*v) + (g*cos(theta)*cos(phi)) + ((f_wz-f_t)/m)
   */
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["Vz"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = N ; k >= 0 ; k--)
+  for (Index k = 0 ; k <= N ; k++)
   {
-    g[nth] = DX[k]
+    g[nth] = (c1*DX[k])
              - (x[INDX["q"] + k] * x[INDX["Vx"] + k])
              + (x[INDX["p"] + k] * x[INDX["Vy"] + k])
              - (grav * cos(x[INDX["theta"] + k]) * cos(x[INDX["phi"] + k]))
-             - (f_wz - (x[INDX["netT"] + k] + f_t)) / mass;
+             - ((f_wz - (x[INDX["netT"] + k] + f_t)) / mass);
     // - ((f_wz - f_t) / mass);
     nth += 1;
   }
@@ -787,7 +787,7 @@ bool QUAD_ROTOR_NLP::eval_g
   g[nth++] = x[INDX["p"    ] + N] - 0.00; /*intial value of "p"    */
   g[nth++] = x[INDX["q"    ] + N] - 0.00; /*intial value of "q"    */
   g[nth++] = x[INDX["r"    ] + N] - 0.00; /*intial value of "r"    */
-  g[nth++] = x[INDX["phi"  ] + N] - 0.00; /*intial value of "phi"  */
+  g[nth++] = x[INDX["phi"  ] + N] - 1.00; /*intial value of "phi"  */
   g[nth++] = x[INDX["theta"] + N] - 0.00; /*intial value of "theta"*/
   g[nth++] = x[INDX["psi"  ] + N] - 0.00; /*intial value of "psi"  */
   g[nth++] = x[INDX["z"    ] + N] - 1.00; /*intial value of "z"    */

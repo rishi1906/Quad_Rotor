@@ -16,7 +16,7 @@ for stt in state_var:
 	
 	plt.plot(x,y,label = ("Pertubrations in "+stt))
 
-	plt.scatter(x, y,label= "CGL Nodes", color= "red", marker= "*", s=10) 
+	plt.scatter(x, y,label= "CGL Nodes", color= "red", marker= ".", s=10) 
 	plt.xlabel('Time')
 	plt.ylabel('Amplitude')
 	plt.title('IPOPT States')

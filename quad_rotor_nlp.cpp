@@ -37,7 +37,7 @@ using namespace Ipopt;
 #define nxt_indx (((idx+1) * N) + (idx+1))
 #define rndm ((mx - mn) * ( (double)rand() / (double)RAND_MAX ) + mn)
 #define sz_n ((n_s + n_c) * (N + 1))
-#define sz_m (((N + 1) * n_s) + n_s)
+#define sz_m (((N + 1) * n_s))
 // define size of stepsize for finite difference scheme to find gradient
 const Number step_size = 1e-8;
 const Number t_0 = 0.00;
@@ -571,7 +571,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["p"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (((Iy - Iz) * x[INDX["r"] + k] * x[INDX["q"] + k]) / Ix)
@@ -589,7 +589,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["q"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (((Iz - Ix) * x[INDX["p"] + k] * x[INDX["r"] + k]) / Iy)
@@ -608,7 +608,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["r"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (((Ix - Iy) * x[INDX["p"] + k] * x[INDX["q"] + k]) / Iz)
@@ -626,7 +626,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["phi"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - x[INDX["p"] + k]
@@ -644,7 +644,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["theta"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (x[INDX["q"] + k] * cos(x[INDX["phi"] + k]))
@@ -661,7 +661,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["psi"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - ((x[INDX["r"] + k] * cos(x[INDX["phi"] + k])) / cos(x[INDX["theta"] + k]))
@@ -678,7 +678,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["x"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (x[INDX["Vz"] + k] * ((sin(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k])) + (cos(x[INDX["phi"] + k]) * cos(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
@@ -695,7 +695,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["y"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (x[INDX["Vy"] + k] * ((cos(x[INDX["phi"] + k]) * cos(x[INDX["psi"] + k])) + (sin(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
@@ -712,7 +712,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["z"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (x[INDX["Vz"] + k] * cos(x[INDX["phi"] + k]) * cos(x[INDX["theta"] + k]))
@@ -730,7 +730,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["Vx"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (x[INDX["r"] + k] * x[INDX["Vy"] + k])
@@ -749,7 +749,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["Vy"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (x[INDX["p"] + k] * x[INDX["Vz"] + k])
@@ -768,7 +768,7 @@ bool QUAD_ROTOR_NLP::eval_g
     X[k] = x[INDX["Vz"] + k];
   }
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
-  for (Index k = 0 ; k <= N ; k++)
+  for (Index k = 0 ; k < N ; k++)
   {
     g[nth] = (c1*DX[k])
              - (x[INDX["q"] + k] * x[INDX["Vx"] + k])

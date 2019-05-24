@@ -789,7 +789,7 @@ bool QUAD_ROTOR_NLP::eval_g
   g[nth++] = x[INDX["p"    ] + N] - 0.00; /*intial value of "p"    */
   g[nth++] = x[INDX["q"    ] + N] - 0.00; /*intial value of "q"    */
   g[nth++] = x[INDX["r"    ] + N] - 0.00; /*intial value of "r"    */
-  g[nth++] = x[INDX["phi"  ] + N] - 1.00; /*intial value of "phi"  */
+  g[nth++] = x[INDX["phi"  ] + N] - 0.00; /*intial value of "phi"  */
   g[nth++] = x[INDX["theta"] + N] - 0.00; /*intial value of "theta"*/
   g[nth++] = x[INDX["psi"  ] + N] - 0.00; /*intial value of "psi"  */
   g[nth++] = x[INDX["z"    ] + N] - 1.00; /*intial value of "z"    */

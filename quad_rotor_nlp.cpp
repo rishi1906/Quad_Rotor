@@ -14,8 +14,8 @@
  *  X = [p q r phi theta psi z  Vz  y  Vy   x  Vx]'
  *       1 2 3 4   5     6   7  8   9  10  11  12
  *  U = [netT Mx My Mz]'
- *  J = 1/2 integral(t_0,t_f,(X'.Q.X+U'.R.U))
- *
+ *  J = integral(t_0,t_f,(X'.Q.X+U'.R.U))
+ *  Q and R are taken as identity matrices
  */
 #include "quad_rotor_nlp.hpp"
 #include <cassert>
@@ -46,6 +46,7 @@ const Number mx = 999.999;
 const Number mn = -999.999;
 const Index n_s = 12 ;  // define the length of X
 const Index n_c = 4 ;   // define the length of U
+const Index add_frc_const = 4;
 
 // constants of the dynamic system
 //****************************************************************
@@ -560,7 +561,8 @@ bool QUAD_ROTOR_NLP::eval_g
 
   Index nth = 0;
   Number c1 = 2.0 / (t_f - t_0);
-  /*
+
+/*
   constraint for p
   p_dot = (((Iy-Iz)*r*q)/Ix) + ((tow_x + tow_wx)/Ix);
   */
@@ -821,6 +823,23 @@ bool QUAD_ROTOR_NLP::eval_g
   // g[nth++] = x[INDX["My"   ]]; /*final value of "My"   */
   // g[nth++] = x[INDX["Mz"   ]]; /*final value of "Mz"   */
 
+ /*
+   add some external force say from time stamps frm to to
+   */
+  /*Index frm = N;
+  Index to = N - add_frc_const ;
+  Number ext_frc = 2.5;
+  for (Index k = frm ; k <=to ; k++)
+  {
+    g[nth] = (c1 * DX[k])
+             - (x[INDX["r"] + k] * x[INDX["Vy"] + k])
+             + (x[INDX["q"] + k] * x[INDX["Vz" ] + k])
+             + (grav * sin(x[INDX["theta"] + k]))
+             - (f_wx / mass)
+             + ext_frc;
+    nth += 1;
+  }
+  */
   //assert(nth == m);
   return true;
 }

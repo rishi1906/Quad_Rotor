@@ -562,10 +562,10 @@ bool QUAD_ROTOR_NLP::eval_g
   Index nth = 0;
   Number c1 = 2.0 / (t_f - t_0);
 
-/*
-  constraint for p
-  p_dot = (((Iy-Iz)*r*q)/Ix) + ((tow_x + tow_wx)/Ix);
-  */
+  /*
+    constraint for p
+    p_dot = (((Iy-Iz)*r*q)/Ix) + ((tow_x + tow_wx)/Ix);
+    */
   for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["p"] + k];
@@ -573,7 +573,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (((Iy - Iz) * x[INDX["r"] + k] * x[INDX["q"] + k]) / Ix)
              - ((x[INDX["Mx"] + k]) / Ix);
     // - ((tow_x + tow_wx) / Ix);
@@ -591,7 +591,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (((Iz - Ix) * x[INDX["p"] + k] * x[INDX["r"] + k]) / Iy)
              - ((x[INDX["My"] + k]) / Iy);
     // - ((tow_y + tow_wy) / Iy);
@@ -610,7 +610,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (((Ix - Iy) * x[INDX["p"] + k] * x[INDX["q"] + k]) / Iz)
              - ((x[INDX["Mz"] + k]) / Iz);
     // - ((tow_z + tow_wz) / Iz);
@@ -628,7 +628,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - x[INDX["p"] + k]
              - (x[INDX["r"] + k] * cos(x[INDX["phi"] + k]) * tan(x[INDX["theta"] + k]))
              - (x[INDX["q"] + k] * (sin(x[INDX["phi"] + k])) * (tan(x[INDX["theta"] + k])));
@@ -646,7 +646,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (x[INDX["q"] + k] * cos(x[INDX["phi"] + k]))
              + (x[INDX["r"] + k] * sin(x[INDX["phi"] + k]));
     nth += 1;
@@ -663,7 +663,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - ((x[INDX["r"] + k] * cos(x[INDX["phi"] + k])) / cos(x[INDX["theta"] + k]))
              - ((x[INDX["q"] + k] * sin(x[INDX["phi"] + k])) / cos(x[INDX["theta"] + k]));
     nth += 1;
@@ -680,7 +680,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (x[INDX["Vz"] + k] * ((sin(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k])) + (cos(x[INDX["phi"] + k]) * cos(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
              + (x[INDX["Vy"] + k] * ((cos(x[INDX["psi"] + k]) * sin(x[INDX["psi"] + k])) - (cos(x[INDX["psi"] + k]) * sin(x[INDX["phi"] + k]) * sin(x[INDX["theta"] + k]))))
              - (x[INDX["Vx"] + k] * cos(x[INDX["psi"] + k]) * cos(x[INDX["theta"] + k]));
@@ -697,7 +697,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (x[INDX["Vy"] + k] * ((cos(x[INDX["phi"] + k]) * cos(x[INDX["psi"] + k])) + (sin(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
              + (x[INDX["Vz"] + k] * ((cos(x[INDX["psi"] + k]) * sin(x[INDX["phi"] + k])) - (cos(x[INDX["phi"] + k]) * sin(x[INDX["psi"] + k]) * sin(x[INDX["theta"] + k]))))
              - (x[INDX["Vx"] + k] * cos(x[INDX["theta"] + k]) * sin(x[INDX["psi"] + k]));
@@ -714,7 +714,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (x[INDX["Vz"] + k] * cos(x[INDX["phi"] + k]) * cos(x[INDX["theta"] + k]))
              + (x[INDX["Vx"] + k] * sin(x[INDX["theta"] + k]))
              - (x[INDX["Vy"] + k] * cos(x[INDX["theta"] + k]) * sin(x[INDX["phi"] + k]));
@@ -725,6 +725,13 @@ bool QUAD_ROTOR_NLP::eval_g
   constraint for Vx(u)
   Vx(u)_dot = (r*v) - (q*w) - (g*sin(theta)) + (f_wx/m)
   */
+
+  /*
+     add some external force say from time stamps frm to to
+     */
+  Number ext_frc = 0.0;
+
+
   for (Index k = 0 ; k <= N ; k++)
   {
     X[k] = x[INDX["Vx"] + k];
@@ -732,11 +739,19 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    if ( (k >= N - 3) && (k <= N - 1) ) // add force on 2 3 and 4th node ie N-1 N-2 and N-4
+    {
+      ext_frc = 2.5;
+    }
+    else {
+      ext_frc = 0.0;
+    }
+    g[nth] = (c1 * DX[k])
              - (x[INDX["r"] + k] * x[INDX["Vy"] + k])
              + (x[INDX["q"] + k] * x[INDX["Vz" ] + k])
              + (grav * sin(x[INDX["theta"] + k]))
-             - (f_wx / mass);
+             - (f_wx / mass)
+             - ext_frc;
     nth += 1;
   }
 
@@ -751,7 +766,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (x[INDX["p"] + k] * x[INDX["Vz"] + k])
              + (x[INDX["r"] + k] * x[INDX["Vx"] + k])
              - (grav * sin(x[INDX["phi"] + k]) * cos(x[INDX["theta"] + k]))
@@ -770,7 +785,7 @@ bool QUAD_ROTOR_NLP::eval_g
   DX = multiply_M_V<Number, Index>(D, X, (N + 1));
   for (Index k = 0 ; k < N ; k++)
   {
-    g[nth] = (c1*DX[k])
+    g[nth] = (c1 * DX[k])
              - (x[INDX["q"] + k] * x[INDX["Vx"] + k])
              + (x[INDX["p"] + k] * x[INDX["Vy"] + k])
              - (grav * cos(x[INDX["theta"] + k]) * cos(x[INDX["phi"] + k]))
@@ -792,7 +807,7 @@ bool QUAD_ROTOR_NLP::eval_g
   g[nth++] = x[INDX["phi"  ] + N] - 0.00; /*intial value of "phi"  */
   g[nth++] = x[INDX["theta"] + N] - 0.00; /*intial value of "theta"*/
   g[nth++] = x[INDX["psi"  ] + N] - 0.00; /*intial value of "psi"  */
-  g[nth++] = x[INDX["z"    ] + N] - 1.00; /*intial value of "z"    */
+  g[nth++] = x[INDX["z"    ] + N] - 0.00; /*intial value of "z"    */
   g[nth++] = x[INDX["Vz"   ] + N] - 0.00; /*intial value of "Vz"   */
   g[nth++] = x[INDX["y"    ] + N] - 0.00; /*intial value of "y"    */
   g[nth++] = x[INDX["Vy"   ] + N] - 0.00; /*intial value of "Vy"   */
@@ -823,23 +838,7 @@ bool QUAD_ROTOR_NLP::eval_g
   // g[nth++] = x[INDX["My"   ]]; /*final value of "My"   */
   // g[nth++] = x[INDX["Mz"   ]]; /*final value of "Mz"   */
 
- /*
-   add some external force say from time stamps frm to to
-   */
-  /*Index frm = N;
-  Index to = N - add_frc_const ;
-  Number ext_frc = 2.5;
-  for (Index k = frm ; k <=to ; k++)
-  {
-    g[nth] = (c1 * DX[k])
-             - (x[INDX["r"] + k] * x[INDX["Vy"] + k])
-             + (x[INDX["q"] + k] * x[INDX["Vz" ] + k])
-             + (grav * sin(x[INDX["theta"] + k]))
-             - (f_wx / mass)
-             + ext_frc;
-    nth += 1;
-  }
-  */
+
   //assert(nth == m);
   return true;
 }
